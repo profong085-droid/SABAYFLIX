@@ -12,7 +12,7 @@ export default function TopNav() {
             <div className="w-2 h-2 bg-primary rounded-full" />
           </div>
         </div>
-        <span className="text-xl font-bold tracking-wider text-white">SABAYFLIX</span>
+        <span className="text-lg font-bold tracking-wider text-white">SABAYFLIX</span>
       </div>
 
       <div className="flex items-center gap-4">

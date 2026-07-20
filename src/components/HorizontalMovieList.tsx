@@ -23,7 +23,7 @@ export default function HorizontalMovieList({ title, movies, viewAllLink }: Hori
       
       <div className="flex overflow-x-auto gap-3 px-4 pb-4 scrollbar-hide snap-x">
         {movies.map((movie) => (
-          <div key={movie.id} className="snap-start w-[110px] flex-none">
+          <div key={movie.id} className="snap-start w-[100px] flex-none">
             <MovieCard movie={movie} />
           </div>
         ))}

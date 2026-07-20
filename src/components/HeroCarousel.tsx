@@ -28,8 +28,8 @@ export default function HeroCarousel({ movies, onIndexChange }: HeroCarouselProp
 
   return (
     <div className="relative w-full overflow-hidden pb-2">
-      <div className="relative flex justify-center items-center h-[340px] w-full mt-2">
-        <div className="relative flex items-center justify-center w-full max-w-[400px]">
+      <div className="relative flex justify-center items-center h-[260px] w-full mt-2">
+        <div className="relative flex items-center justify-center w-full max-w-[360px]">
           {movies.map((movie, index) => {
             const isActive = index === currentIndex;
             const isPrev = index === (currentIndex - 1 + movies.length) % movies.length;
@@ -42,9 +42,9 @@ export default function HeroCarousel({ movies, onIndexChange }: HeroCarouselProp
             if (isActive) {
               transformClass = "scale-100 opacity-100 z-20 translate-x-0";
             } else if (isPrev) {
-              transformClass = "scale-[0.85] opacity-40 z-10 -translate-x-[70%] blur-[0.5px]";
+              transformClass = "scale-[0.85] opacity-40 z-10 -translate-x-[75%] blur-[0.5px]";
             } else if (isNext) {
-              transformClass = "scale-[0.85] opacity-40 z-10 translate-x-[70%] blur-[0.5px]";
+              transformClass = "scale-[0.85] opacity-40 z-10 translate-x-[75%] blur-[0.5px]";
             }
 
             return (
@@ -53,7 +53,7 @@ export default function HeroCarousel({ movies, onIndexChange }: HeroCarouselProp
                 className={`absolute transition-all duration-500 ease-in-out cursor-pointer ${transformClass}`}
                 onClick={() => !isActive && handleSetIndex(index)}
               >
-                <div className="relative w-[210px] h-[310px] rounded-[24px] overflow-hidden shadow-2xl border border-gray-800">
+                <div className="relative w-[155px] h-[230px] rounded-[20px] overflow-hidden shadow-2xl border border-gray-800">
                   <Image
                     src={movie.poster}
                     alt={movie.title}
