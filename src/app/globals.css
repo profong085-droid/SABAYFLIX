@@ -1,0 +1,22 @@
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+:root {
+  --background: #090B10;
+  --foreground: #ffffff;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* Hide scrollbar for horizontal scrolling but keep functionality */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
