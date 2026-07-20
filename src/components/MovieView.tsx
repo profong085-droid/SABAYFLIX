@@ -5,45 +5,63 @@ import VideoPlayer from "@/components/VideoPlayer";
 import PaymentModal from "@/components/PaymentModal";
 import { allMoviesList } from "@/lib/mockData";
 import type { Movie } from "@/lib/mockData";
-import { getStoredItems, addStoredItem, toggleStoredItem } from "@/lib/storage";
+import { getUserMovies, toggleUserMovie } from "@/lib/db";
+import { useAuth } from "@/context/AuthContext";
 import { Share2, Ban, Bookmark, BookmarkCheck, Download, CheckCircle2, User, Play } from "lucide-react";
 import Image from "next/image";
 import MovieCard from "@/components/MovieCard";
+import { useRouter } from "next/navigation";
 
 interface MovieViewProps {
   movie: Movie;
 }
 
 export default function MovieView({ movie }: MovieViewProps) {
+  const router = useRouter();
+  const { user } = useAuth();
   const [isPaid, setIsPaid] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
 
   useEffect(() => {
-    // Record as watching
-    addStoredItem("sabayflix_watching", movie.id, true);
+    async function loadUserData() {
+      if (!user) return;
+      
+      // Record as watching
+      await toggleUserMovie(user.uid, "watching", movie.id, true);
 
-    // Check if movie was already purchased
-    const paidItems = getStoredItems("sabayflix_purchased");
-    if (paidItems.includes(movie.id)) setIsPaid(true);
+      // Fetch states
+      const paidItems = await getUserMovies(user.uid, "purchased");
+      if (paidItems.includes(movie.id)) setIsPaid(true);
 
-    // Check if movie is saved
-    const savedItems = getStoredItems("sabayflix_saved");
-    if (savedItems.includes(movie.id)) setIsSaved(true);
+      const savedItems = await getUserMovies(user.uid, "saved");
+      if (savedItems.includes(movie.id)) setIsSaved(true);
 
-    // Check if movie is downloaded
-    const downloadedItems = getStoredItems("sabayflix_downloaded");
-    if (downloadedItems.includes(movie.id)) setIsDownloaded(true);
-  }, [movie.id]);
+      const downloadedItems = await getUserMovies(user.uid, "downloaded");
+      if (downloadedItems.includes(movie.id)) setIsDownloaded(true);
+    }
+    
+    loadUserData();
+  }, [movie.id, user]);
 
-  const toggleSave = () => {
-    const { isAdded } = toggleStoredItem("sabayflix_saved", movie.id);
-    setIsSaved(isAdded);
+  const toggleSave = async () => {
+    if (!user) {
+      alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីរក្សាទុករឿងនេះ!");
+      router.push("/login");
+      return;
+    }
+    const added = await toggleUserMovie(user.uid, "saved", movie.id);
+    setIsSaved(added);
   };
 
-  const toggleDownload = () => {
-    const { isAdded } = toggleStoredItem("sabayflix_downloaded", movie.id);
-    setIsDownloaded(isAdded);
+  const toggleDownload = async () => {
+    if (!user) {
+      alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទាញយករឿងនេះ!");
+      router.push("/login");
+      return;
+    }
+    const added = await toggleUserMovie(user.uid, "downloaded", movie.id);
+    setIsDownloaded(added);
   };
 
   const recommendedMovies = allMoviesList.filter(m => m.id !== movie.id).slice(0, 8);

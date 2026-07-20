@@ -5,9 +5,21 @@ import { Settings, ChevronRight, Facebook, Send, Play, Camera, ShoppingCart, Hea
 import Image from "next/image";
 import Link from "next/link";
 import { getStoredItems } from "@/lib/storage";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { auth } from "@/lib/firebase";
+import { signOut } from "firebase/auth";
 
 export default function ProfilePage() {
+  const { user, loading } = useAuth();
+  const router = useRouter();
   const [stats, setStats] = useState({ bought: 0, saved: 0 });
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   useEffect(() => {
     const paidIds = getStoredItems("sabayflix_purchased");
@@ -16,6 +28,23 @@ export default function ProfilePage() {
     const savedIds = getStoredItems("sabayflix_saved");
     setStats(prev => ({ ...prev, saved: savedIds.length }));
   }, []);
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      router.push("/login");
+    } catch (error) {
+      console.error("Error signing out:", error);
+    }
+  };
+
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen bg-[#0a0a0a] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+      </div>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#0a0a0a] pb-24 font-sans selection:bg-red-500/30">
@@ -44,9 +73,9 @@ export default function ProfilePage() {
             <div className="relative mt-16 mx-4 mb-4 p-5 rounded-2xl bg-[#141414]/80 backdrop-blur-xl border border-white/5 shadow-xl flex items-center gap-5">
               
               <div className="relative group/avatar cursor-pointer">
-                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-gray-900 border-2 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-transform duration-300 group-hover/avatar:scale-105">
+                <div className="w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden bg-gray-900 border-2 border-red-500 shadow-[0_0_15px_rgba(239,68,68,0.3)] transition-transform duration-300 group-hover/avatar:scale-105 relative">
                   <Image 
-                    src="https://placehold.co/200x200/111111/ef4444/png?text=F" 
+                    src={user?.photoURL || "https://placehold.co/200x200/111111/ef4444/png?text=U"} 
                     alt="Avatar" 
                     fill 
                     className="object-cover"
@@ -57,12 +86,16 @@ export default function ProfilePage() {
                 </div>
               </div>
               
-              <div className="flex-1">
+              <div className="flex-1 overflow-hidden">
                 <div className="flex items-center gap-2 mb-1">
-                  <h2 className="text-white text-xl md:text-2xl font-bold">Fong</h2>
-                  <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-blue-500" />
+                  <h2 className="text-white text-xl md:text-2xl font-bold truncate">
+                    {user?.displayName || "សមាជិក SABAYFLIX"}
+                  </h2>
+                  <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-blue-500 shrink-0" />
                 </div>
-                <p className="text-gray-400 text-xs md:text-sm font-mono bg-black/30 w-fit px-2 py-1 rounded-md mb-2 md:mb-3 border border-white/5">ID: pFhsZ_LgEQtt</p>
+                <p className="text-gray-400 text-xs md:text-sm font-mono bg-black/30 w-fit px-2 py-1 rounded-md mb-2 md:mb-3 border border-white/5 truncate max-w-full">
+                  {user?.email || user?.phoneNumber || "មិនមានព័ត៌មាន"}
+                </p>
                 <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-red-600/20 to-transparent px-3 py-1 rounded-full border border-red-500/20">
                   <Crown className="w-3.5 h-3.5 text-red-500" />
                   <span className="text-red-400 text-[10px] md:text-xs font-bold tracking-wider">សមាជិកធម្មតា</span>
@@ -142,7 +175,7 @@ export default function ProfilePage() {
             ))}
           </div>
 
-          <button className="w-full flex items-center justify-center gap-2 p-4 md:p-5 bg-[#141414] hover:bg-red-500/10 rounded-2xl border border-red-500/20 text-red-500 text-sm md:text-base font-bold active:scale-95 transition-all mb-10 shadow-lg group">
+          <button onClick={handleLogout} className="w-full flex items-center justify-center gap-2 p-4 md:p-5 bg-[#141414] hover:bg-red-500/10 rounded-2xl border border-red-500/20 text-red-500 text-sm md:text-base font-bold active:scale-95 transition-all mb-10 shadow-lg group">
             <LogOut className="w-4 h-4 md:w-5 md:h-5 group-hover:-translate-x-1 transition-transform" />
             ចាកចេញពីគណនី (Logout)
           </button>
@@ -180,3 +213,4 @@ export default function ProfilePage() {
     </main>
   );
 }
+
