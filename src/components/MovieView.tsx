@@ -6,7 +6,8 @@ import PaymentModal from "@/components/PaymentModal";
 import { allMoviesList } from "@/lib/mockData";
 import type { Movie } from "@/lib/mockData";
 import { getStoredItems, addStoredItem, toggleStoredItem } from "@/lib/storage";
-import { Share2, Ban, Bookmark, BookmarkCheck, Download, CheckCircle2, User } from "lucide-react";
+import { Share2, Ban, Bookmark, BookmarkCheck, Download, CheckCircle2, User, Play } from "lucide-react";
+import Image from "next/image";
 import MovieCard from "@/components/MovieCard";
 
 interface MovieViewProps {
@@ -127,6 +128,38 @@ export default function MovieView({ movie }: MovieViewProps) {
 
             {/* Payment / Buy Button Action */}
             <PaymentModal movieId={movie.id} isPaid={isPaid} setIsPaid={setIsPaid} />
+
+            {/* Episodes List (Only for TV Series) */}
+            {movie.episodes && movie.episodes.length > 0 && (
+              <div className="mt-12">
+                <div className="flex items-center justify-between mb-6">
+                  <h3 className="text-white text-xl font-bold">ភាគទាំងអស់</h3>
+                  <div className="bg-[#141414] border border-white/10 px-4 py-2 rounded-lg text-sm text-white flex items-center gap-2 cursor-pointer">
+                    រដូវកាលទី ១ (Season 1)
+                  </div>
+                </div>
+                
+                <div className="space-y-4">
+                  {movie.episodes.map((ep, idx) => (
+                    <div key={ep.id} className="flex gap-4 p-3 rounded-2xl hover:bg-white/5 transition-colors cursor-pointer group">
+                      <div className="relative w-32 md:w-40 aspect-video rounded-xl overflow-hidden flex-shrink-0 border border-white/10">
+                        <Image src={ep.image} alt={ep.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors" />
+                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                          <div className="w-10 h-10 bg-white/20 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30">
+                            <Play className="w-4 h-4 text-white fill-white" />
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex-1 py-1">
+                        <h4 className="text-white font-medium text-sm md:text-base group-hover:text-red-400 transition-colors mb-1">{idx + 1}. {ep.title}</h4>
+                        <span className="text-xs text-gray-500">{ep.duration}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column: More Like This (30%) */}

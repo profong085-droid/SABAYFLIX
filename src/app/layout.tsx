@@ -20,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="km">
-      <body className="antialiased bg-black text-textPrimary flex justify-center min-h-screen">
+    <html lang="km" suppressHydrationWarning>
+      <body className="antialiased bg-black text-textPrimary flex justify-center min-h-screen" suppressHydrationWarning>
         <div className="w-full bg-background min-h-screen relative shadow-2xl pb-16 overflow-x-hidden">
           {children}
           <BottomNav />

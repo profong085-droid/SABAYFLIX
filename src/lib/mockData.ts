@@ -19,6 +19,12 @@ export interface Movie {
   genre: string;
   description: string;
   isNew?: boolean;
+  episodes?: {
+    id: string;
+    title: string;
+    duration: string;
+    image: string | StaticImageData;
+  }[];
 }
 
 export const featuredMovies: Movie[] = [
@@ -46,6 +52,13 @@ export const featuredMovies: Movie[] = [
     language: "ខ្មែរ",
     genre: "ទិព្វ",
     description: "កុមារា Danbi ដែលស្រមៃចង់ក្លាយជាអ្នកនិពន្ធសៀវភៅកុមារ...",
+    episodes: [
+      { id: "e1", title: "ភាគ 1: ក្តីស្រមៃ", duration: "45m", image: m2 },
+      { id: "e2", title: "ភាគ 2: ការរកឃើញ", duration: "48m", image: m3 },
+      { id: "e3", title: "ភាគ 3: ភាពប្រឈម", duration: "42m", image: m4 },
+      { id: "e4", title: "ភាគ 4: សៀវភៅទីមួយ", duration: "50m", image: m5 },
+      { id: "e5", title: "ភាគ 5: អាថ៌កំបាំង", duration: "46m", image: m6 },
+    ]
   },
   {
     id: "f3",
@@ -85,6 +98,13 @@ export const trendingMovies: Movie[] = [
     language: "ខ្មែរ",
     genre: "ទិព្វ",
     description: "កុមារា Danbi ដែលស្រមៃចង់ក្លាយជាអ្នកនិពន្ធសៀវភៅកុមារ...",
+    episodes: [
+      { id: "e1", title: "ភាគ 1: ក្តីស្រមៃ", duration: "45m", image: m2 },
+      { id: "e2", title: "ភាគ 2: ការរកឃើញ", duration: "48m", image: m3 },
+      { id: "e3", title: "ភាគ 3: ភាពប្រឈម", duration: "42m", image: m4 },
+      { id: "e4", title: "ភាគ 4: សៀវភៅទីមួយ", duration: "50m", image: m5 },
+      { id: "e5", title: "ភាគ 5: អាថ៌កំបាំង", duration: "46m", image: m6 },
+    ]
   },
   {
     id: "t2",
