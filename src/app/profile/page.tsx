@@ -74,7 +74,7 @@ export default function ProfilePage() {
            </div>
            <span className="text-yellow-500 font-bold tracking-widest text-xs mb-1">SABAYFLIX</span>
            <span className="text-white text-sm font-bold w-2/3 leading-tight">ទទួលអោយបានរង្វាន់ធំចុះឈ្មោះឥឡូវនេះ</span>
-           <span className="text-yellow-500 text-xs mt-2 font-bold cursor-pointer hover:underline">ចុះឈ្មោះឥឡូវនេះ ></span>
+           <span className="text-yellow-500 text-xs mt-2 font-bold cursor-pointer hover:underline">ចុះឈ្មោះឥឡូវនេះ &gt;</span>
         </div>
 
         {/* Menu List */}
