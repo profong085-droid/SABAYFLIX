@@ -124,6 +124,9 @@ export default function MovieView({ movie }: MovieViewProps) {
                 </p>
               </div>
             </div>
+
+            {/* Payment / Buy Button Action */}
+            <PaymentModal movieId={movie.id} isPaid={isPaid} setIsPaid={setIsPaid} />
           </div>
 
           {/* Right Column: More Like This (30%) */}
@@ -139,7 +142,6 @@ export default function MovieView({ movie }: MovieViewProps) {
         </div>
       </div>
       
-      <PaymentModal movieId={movie.id} isPaid={isPaid} setIsPaid={setIsPaid} />
     </div>
   );
 }

@@ -40,23 +40,15 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
 
   return (
     <>
-      {/* Sticky Bottom Action Button */}
+      {/* Inline Action Button for Buying */}
       {!isPaid && (
-        <div 
-          onClick={() => setStep(1)}
-          className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-7xl py-3 px-3 bg-background border-t border-gray-900 z-50 flex justify-between items-center cursor-pointer transition-transform active:scale-95 shadow-[0_-20px_25px_-5px_rgba(0,0,0,0.5)]"
-        >
-          <div className="flex items-center gap-2">
-             <div className="w-8 h-8 rounded-full bg-red-600/20 flex items-center justify-center">
-               <span className="text-red-500 font-bold text-lg">⃠</span>
-             </div>
-             <div>
-                <p className="text-xs text-gray-400">បម្រាម</p>
-                <p className="text-[9px] text-gray-600">ហាមថតចម្លងវីដេអូ...</p>
-             </div>
-          </div>
-          <button className="bg-red-600 px-4 py-2 rounded-full text-white font-bold text-xs shadow-lg shadow-red-600/20">
-            ចុចទីនេះ! ដើម្បីមើលរឿង
+        <div className="w-full mt-4 flex justify-center lg:justify-start">
+          <button 
+            onClick={() => setStep(1)}
+            className="w-full lg:w-auto px-8 py-3.5 bg-red-600 hover:bg-red-700 rounded-xl text-white font-bold text-[15px] shadow-lg shadow-red-600/20 transition-transform active:scale-95 flex items-center justify-center gap-2"
+          >
+            <ShoppingCart className="w-5 h-5" />
+            ទិញវីដេអូនេះ ដើម្បីមើលរឿង
           </button>
         </div>
       )}
