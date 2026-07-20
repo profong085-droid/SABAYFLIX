@@ -1,6 +1,13 @@
 import "./globals.css";
 import BottomNav from "@/components/layout/BottomNav";
-import TopNav from "@/components/layout/TopNav";
+import type { Viewport } from "next";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+};
 
 export const metadata = {
   title: "SabayFlix",
@@ -15,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="km">
       <body className="antialiased bg-black text-textPrimary flex justify-center min-h-screen">
-        <div className="w-full max-w-md bg-background min-h-screen relative shadow-2xl border-x border-gray-900 pb-16 overflow-x-hidden">
+        <div className="w-full bg-background min-h-screen relative shadow-2xl pb-16 overflow-x-hidden">
           {children}
           <BottomNav />
         </div>

@@ -26,11 +26,6 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
   return (
     <main className="min-h-screen bg-background pb-20">
       <MovieView movie={m} />
-
-      {/* Similar Movies */}
-      <div className="mt-2">
-        <HorizontalMovieList title="រឿងស្រដៀង" movies={similarMovies} />
-      </div>
     </main>
   );
 }

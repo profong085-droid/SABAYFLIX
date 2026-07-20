@@ -22,17 +22,17 @@ export default function BottomNav() {
   ];
 
   return (
-    <div className="fixed bottom-0 w-full max-w-md bg-surface border-t border-gray-800 z-50 flex items-center justify-between px-4 h-16">
+    <div className="md:hidden fixed bottom-0 left-0 w-full bg-surface border-t border-gray-800 z-50 flex items-center justify-between px-2 h-14">
       {navItems.map((item) => {
         const isActive = pathname === item.href;
         
         if (item.isMain) {
           return (
             <Link key={item.name} href={item.href} className="relative flex flex-col items-center justify-center w-full">
-              <div className="absolute -top-10 flex items-center justify-center w-14 h-14 bg-primary rounded-full shadow-lg border-4 border-surface">
-                <item.icon className="w-6 h-6 text-white" />
+              <div className="absolute -top-7 flex items-center justify-center w-12 h-12 bg-primary rounded-full shadow-lg border-4 border-surface">
+                <item.icon className="w-5 h-5 text-white" />
               </div>
-              <span className="text-[10px] text-textSecondary mt-6">{item.name}</span>
+              <span className="text-[9px] text-textSecondary mt-6">{item.name}</span>
             </Link>
           );
         }
@@ -46,8 +46,8 @@ export default function BottomNav() {
               isActive ? "text-primary" : "text-textSecondary hover:text-white"
             )}
           >
-            <item.icon className={clsx("w-6 h-6", isActive ? "fill-primary text-primary" : "")} />
-            <span className="text-[10px]">{item.name}</span>
+            <item.icon className={clsx("w-5 h-5", isActive ? "fill-primary text-primary" : "")} />
+            <span className="text-[9px]">{item.name}</span>
           </Link>
         );
       })}

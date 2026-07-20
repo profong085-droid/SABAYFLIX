@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Search as SearchIcon, ArrowLeft } from "lucide-react";
+import { Search as SearchIcon, ArrowLeft, Play } from "lucide-react";
 import { useRouter } from "next/navigation";
 import MovieCard from "@/components/MovieCard";
 import { allMoviesList } from "@/lib/mockData";
+import Link from "next/link";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
@@ -17,12 +18,12 @@ export default function SearchPage() {
   return (
     <main className="min-h-screen bg-[#111111] pb-20 font-sans">
       <div className="flex items-center justify-between p-4 bg-[#111111] sticky top-0 z-40">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center">
-             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-white fill-white"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+             <Play className="w-4 h-4 text-white fill-white" />
           </div>
           <span className="text-xl font-bold tracking-widest text-white">SABAYFLIX</span>
-        </div>
+        </Link>
       </div>
       
       <div className="px-4 pb-2 sticky top-[68px] bg-[#111111] z-40">
@@ -61,7 +62,7 @@ export default function SearchPage() {
         <div className="p-4">
           <h3 className="text-textSecondary text-sm mb-4 font-medium">លទ្ធផលស្វែងរក: &quot;{query}&quot;</h3>
           {filteredMovies.length > 0 ? (
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3 sm:gap-4">
               {filteredMovies.map(movie => (
                 <div key={movie.id} className="w-full">
                   <MovieCard movie={movie} />

@@ -4,21 +4,33 @@ import { useState, useEffect } from "react";
 import MovieCard from "@/components/MovieCard";
 import { allMoviesList } from "@/lib/mockData";
 import type { Movie } from "@/lib/mockData";
+import { getStoredItems } from "@/lib/storage";
 import { VideoOff, Play } from "lucide-react";
 import Link from "next/link";
 
 export default function MyMoviesPage() {
   const [activeTab, setActiveTab] = useState("bought");
   const [savedMovies, setSavedMovies] = useState<Movie[]>([]);
+  const [watchList, setWatchList] = useState<Movie[]>([]);
+  const [watchingMovies, setWatchingMovies] = useState<Movie[]>([]);
+  const [downloadedMovies, setDownloadedMovies] = useState<Movie[]>([]);
 
   useEffect(() => {
-    // Load purchased movies from localStorage
-    const stored = localStorage.getItem("sabayflix_purchased") || "[]";
-    try {
-      const parsedIds = JSON.parse(stored) as string[];
-      const loadedMovies = allMoviesList.filter(m => parsedIds.includes(m.id));
-      setSavedMovies(loadedMovies);
-    } catch (e) {}
+    // Load purchased movies
+    const paidIds = getStoredItems("sabayflix_purchased");
+    setSavedMovies(allMoviesList.filter(m => paidIds.includes(m.id)));
+
+    // Load saved movies (watchlist)
+    const savedIds = getStoredItems("sabayflix_saved");
+    setWatchList(allMoviesList.filter(m => savedIds.includes(m.id)));
+
+    // Load watching movies
+    const watchingIds = getStoredItems("sabayflix_watching");
+    setWatchingMovies(watchingIds.map(id => allMoviesList.find(m => m.id === id)).filter(Boolean) as Movie[]);
+
+    // Load downloaded movies
+    const downloadedIds = getStoredItems("sabayflix_downloaded");
+    setDownloadedMovies(allMoviesList.filter(m => downloadedIds.includes(m.id)));
   }, []);
   
   // Use different mock data lists for different tabs
@@ -26,11 +38,11 @@ export default function MyMoviesPage() {
   if (activeTab === "bought") {
      displayMovies = savedMovies;
   } else if (activeTab === "saved") {
-     displayMovies = []; // Example empty state
+     displayMovies = watchList;
   } else if (activeTab === "watching") {
-     displayMovies = []; // Example empty state
+     displayMovies = watchingMovies;
   } else if (activeTab === "downloaded") {
-     displayMovies = []; // Example empty state
+     displayMovies = downloadedMovies;
   }
 
   const tabs = [
@@ -44,12 +56,12 @@ export default function MyMoviesPage() {
     <main className="min-h-screen bg-[#111111] pb-24 font-sans">
       {/* TopNav */}
       <div className="flex items-center justify-between p-4 bg-[#111111] sticky top-0 z-40">
-        <div className="flex items-center gap-2">
+        <Link href="/" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center">
              <Play className="w-4 h-4 text-white fill-white" />
           </div>
           <span className="text-xl font-bold tracking-widest text-white">SABAYFLIX</span>
-        </div>
+        </Link>
         <Link href="/movies" className="text-gray-400 text-sm hover:text-white">
           រឿងទាំងអស់
         </Link>
@@ -74,7 +86,7 @@ export default function MyMoviesPage() {
       </div>
       
       {displayMovies.length > 0 ? (
-        <div className="grid grid-cols-3 gap-3 px-4 pt-4 animate-in fade-in zoom-in-95 duration-300">
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:grid-cols-6 xl:grid-cols-7 gap-3 sm:gap-4 px-4 pt-4 animate-in fade-in zoom-in-95 duration-300">
           {displayMovies.map(movie => (
             <div key={movie.id} className="w-full">
               <MovieCard movie={movie} />

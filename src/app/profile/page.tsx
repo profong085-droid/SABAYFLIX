@@ -1,8 +1,22 @@
-import { Settings, ChevronRight, Facebook, Send, Play, Tv, Camera, ShoppingCart, Heart } from "lucide-react";
+"use client";
+
+import { useState, useEffect } from "react";
+import { Settings, ChevronRight, Facebook, Send, Play, Tv, Camera, ShoppingCart, Heart, LogOut, Globe } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { getStoredItems } from "@/lib/storage";
 
 export default function ProfilePage() {
+  const [stats, setStats] = useState({ bought: 0, saved: 0 });
+
+  useEffect(() => {
+    const paidIds = getStoredItems("sabayflix_purchased");
+    setStats(prev => ({ ...prev, bought: paidIds.length }));
+
+    const savedIds = getStoredItems("sabayflix_saved");
+    setStats(prev => ({ ...prev, saved: savedIds.length }));
+  }, []);
+
   return (
     <main className="min-h-screen bg-[#111111] pb-24 font-sans">
       {/* Header */}
@@ -53,7 +67,7 @@ export default function ProfilePage() {
                </div>
              </div>
              <span className="text-gray-400 text-[10px] mb-1">រឿងបានទិញ</span>
-             <span className="text-white text-xs font-bold">0</span>
+             <span className="text-white text-xs font-bold">{stats.bought}</span>
           </div>
           <div className="flex-1 bg-[#1a1b23] rounded-2xl p-3 flex flex-col items-center justify-center border border-gray-800">
              <div className="mb-2">
@@ -62,7 +76,7 @@ export default function ProfilePage() {
                </div>
              </div>
              <span className="text-gray-400 text-[10px] mb-1">រឿងបានរក្សាទុក</span>
-             <span className="text-white text-xs font-bold">0</span>
+             <span className="text-white text-xs font-bold">{stats.saved}</span>
           </div>
         </div>
         
@@ -78,21 +92,29 @@ export default function ProfilePage() {
         </div>
 
         {/* Menu List */}
-        <div className="bg-[#1a1b23] rounded-2xl border border-gray-800 overflow-hidden mb-6">
+        <div className="bg-[#1a1b23] rounded-2xl border border-gray-800 overflow-hidden mb-4">
           {[
-            { label: "ព័ត៌មានគណនី", href: "#" },
-            { label: "លេខសម្ងាត់", href: "#" },
-            { label: "រឿងដែលបានទិញ", href: "/my-movies" },
-            { label: "ប្រវត្តិប្រតិបត្តិការ", href: "#" },
+            { label: "ព័ត៌មានគណនី", href: "#", icon: null },
+            { label: "រឿងដែលបានទិញ", href: "/my-movies", icon: null },
+            { label: "ប្រវត្តិប្រតិបត្តិការ", href: "#", icon: null },
+            { label: "ប្តូរភាសា (Language)", href: "#", icon: <Globe className="w-4 h-4 text-gray-500 mr-2" /> },
           ].map((item, idx) => (
             <Link key={idx} href={item.href}>
               <div className="flex items-center justify-between p-4 border-b border-gray-800 last:border-0 active:bg-gray-800/50 transition-colors">
-                <span className="text-gray-300 text-sm font-medium">{item.label}</span>
+                <div className="flex items-center">
+                  {item.icon}
+                  <span className="text-gray-300 text-sm font-medium">{item.label}</span>
+                </div>
                 <ChevronRight className="w-4 h-4 text-gray-500" />
               </div>
             </Link>
           ))}
         </div>
+
+        <button className="w-full flex items-center justify-center gap-2 p-4 bg-[#1a1b23] rounded-2xl border border-gray-800 text-red-500 text-sm font-bold active:scale-95 transition-transform mb-6">
+          <LogOut className="w-4 h-4" />
+          ចាកចេញពីគណនី (Logout)
+        </button>
 
         {/* Social Icons row (optional as per video) */}
         <div className="flex justify-center gap-6 py-4">
