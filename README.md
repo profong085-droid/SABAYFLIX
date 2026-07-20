@@ -2,6 +2,10 @@
 
 SabayFlix គឺជាកម្មវិធីមើលវីដេអូកម្សាន្ត (Movie Streaming Web Application) ដ៏ស្រស់ស្អាតនិងទាន់សម័យ ដែលបង្កើតឡើងដោយប្រើប្រាស់ **Next.js (App Router), Tailwind CSS, និង TypeScript**។ ការរចនារបស់វាត្រូវបានផ្តោតសំខាន់ទៅលើបទពិសោធន៍អ្នកប្រើប្រាស់ (Premium Cinematic UI) ស្រដៀងទៅនឹងកម្មវិធី Netflix ដែរ។
 
+## 📸 រូបភាព (Screenshots)
+![SabayFlix Screenshot 1](./Screenshot%20(223).png)
+![SabayFlix Screenshot 2](./Screenshot%20(224).png)
+
 ---
 
 ## 🚀 របៀបទាញយក និង ដំណើរការ (How to Clone and Run)
