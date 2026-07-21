@@ -123,14 +123,31 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
   };
 
   const toggleFullscreen = () => {
-    if (containerRef.current) {
-      if (!document.fullscreenElement) {
-        containerRef.current.requestFullscreen().catch(err => {
+    const container = containerRef.current as any;
+    const video = videoRef.current as any;
+    
+    if (!container || !video) return;
+
+    if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) {
+      if (container.requestFullscreen) {
+        container.requestFullscreen().catch((err: any) => {
           console.warn("Fullscreen error:", err);
-          alert("មុខងារ Fullscreen មិនត្រូវបានអនុញ្ញាតក្នុងផ្ទាំង Preview នេះទេ។ សូមសាកល្បងបើកវា (Open in New Tab) ក្នុង Browser ទើបអាចប្រើបាន។");
+          if (video.webkitEnterFullscreen) {
+            video.webkitEnterFullscreen();
+          } else {
+            alert("មុខងារពង្រីកអេក្រង់មានបញ្ហា សូមសាកល្បងបើកលើ Browser ផ្សេង។");
+          }
         });
-      } else {
+      } else if (container.webkitRequestFullscreen) {
+        container.webkitRequestFullscreen();
+      } else if (video.webkitEnterFullscreen) {
+        video.webkitEnterFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
         document.exitFullscreen().catch(err => console.error(err));
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
       }
     }
   };
