@@ -22,21 +22,21 @@ export default function TopNav() {
       </div>
 
       <div className="flex items-center gap-4">
-        <div className="flex flex-col items-center cursor-pointer">
+        <Link href="/promotions" className="flex flex-col items-center cursor-pointer hover:opacity-80 transition-opacity">
           <span className="text-[10px] text-gray-400 mb-1">ប្រូម៉ូសិន</span>
           <div className="relative">
             <Gift className="w-6 h-6 text-yellow-500" />
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-background"></div>
           </div>
-        </div>
+        </Link>
         
-        <div className="flex flex-col items-center cursor-pointer">
+        <Link href="/notifications" className="flex flex-col items-center cursor-pointer hover:opacity-80 transition-opacity">
           <span className="text-[10px] text-gray-400 mb-1">សារថ្មីៗ</span>
           <div className="relative">
             <Bell className="w-6 h-6 text-yellow-500" />
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-background"></div>
           </div>
-        </div>
+        </Link>
         </div>
       </div>
     </div>

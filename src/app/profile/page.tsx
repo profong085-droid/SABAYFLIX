@@ -1,19 +1,29 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Settings, ChevronRight, Facebook, Send, Play, Camera, ShoppingCart, Heart, LogOut, Globe, History, User, ShieldCheck, Crown } from "lucide-react";
+import { Settings, ChevronRight, Facebook, Send, Play, Camera, ShoppingCart, Heart, LogOut, Globe, History, User, ShieldCheck, Crown, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getAllUserMovies } from "@/lib/db";
+import { getAllUserMovies, updateUserName } from "@/lib/db";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
-import { signOut } from "firebase/auth";
+import { signOut, updateProfile } from "firebase/auth";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
   const [stats, setStats] = useState({ bought: 0, saved: 0 });
+  
+  const [isEditing, setIsEditing] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    if (user && user.displayName) {
+      setNewName(user.displayName);
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -39,7 +49,22 @@ export default function ProfilePage() {
       await signOut(auth);
       router.push("/login");
     } catch (error) {
-      console.error("Error signing out:", error);
+      console.error("Logout error:", error);
+    }
+  };
+
+  const handleSaveName = async () => {
+    if (!user || !auth.currentUser || !newName.trim()) return;
+    setSaving(true);
+    try {
+      await updateProfile(auth.currentUser, { displayName: newName.trim() });
+      await updateUserName(user.uid, newName.trim());
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating name:", error);
+      alert("មានបញ្ហាក្នុងការកែប្រែឈ្មោះ។");
+    } finally {
+      setSaving(false);
     }
   };
 
@@ -93,10 +118,34 @@ export default function ProfilePage() {
               
               <div className="flex-1 overflow-hidden">
                 <div className="flex items-center gap-2 mb-1">
-                  <h2 className="text-white text-xl md:text-2xl font-bold truncate">
-                    {user?.displayName || "សមាជិក PHUMCINE"}
-                  </h2>
-                  <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-blue-500 shrink-0" />
+                  {isEditing ? (
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="text" 
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        className="bg-black/50 border border-red-500/50 rounded px-2 py-1 text-white text-sm focus:outline-none focus:border-red-500 w-40"
+                        placeholder="បញ្ចូលឈ្មោះរបស់អ្នក"
+                        autoFocus
+                      />
+                      <button onClick={handleSaveName} disabled={saving} className="p-1 bg-green-600/20 text-green-500 rounded hover:bg-green-600/40">
+                         {saving ? <span className="w-4 h-4 rounded-full border-2 border-green-500 border-t-transparent animate-spin inline-block"></span> : <ShieldCheck className="w-4 h-4" />}
+                      </button>
+                      <button onClick={() => setIsEditing(false)} disabled={saving} className="p-1 bg-red-600/20 text-red-500 rounded hover:bg-red-600/40">
+                         <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <h2 className="text-white text-xl md:text-2xl font-bold truncate">
+                        {user?.displayName || "សមាជិក PHUMCINE"}
+                      </h2>
+                      <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-blue-500 shrink-0" />
+                      <button onClick={() => setIsEditing(true)} className="p-1 ml-2 bg-white/5 text-gray-400 rounded-full hover:bg-white/10 hover:text-white transition-colors">
+                        <Settings className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                      </button>
+                    </>
+                  )}
                 </div>
                 <p className="text-gray-400 text-xs md:text-sm font-mono bg-black/30 w-fit px-2 py-1 rounded-md mb-2 md:mb-3 border border-white/5 truncate max-w-full">
                   {user?.email || user?.phoneNumber || "មិនមានព័ត៌មាន"}

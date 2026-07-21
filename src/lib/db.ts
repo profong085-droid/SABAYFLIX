@@ -166,3 +166,31 @@ export async function getAdminStats(): Promise<{ totalUsers: number, totalRevenu
     return { totalUsers: 0, totalRevenue: 0 };
   }
 }
+
+// Update user name in Firestore
+export async function updateUserName(uid: string, newName: string) {
+  try {
+    const userRef = doc(db, "users", uid);
+    await setDoc(userRef, { displayName: newName }, { merge: true });
+    return true;
+  } catch (error) {
+    console.error("Error updating user name:", error);
+    return false;
+  }
+}
+
+// Upgrade user to VIP
+export async function upgradeToVip(uid: string, planName: string) {
+  try {
+    const userRef = doc(db, "users", uid);
+    await setDoc(userRef, { 
+      isVip: true, 
+      vipPlan: planName,
+      vipSince: new Date().toISOString()
+    }, { merge: true });
+    return true;
+  } catch (error) {
+    console.error("Error upgrading to VIP:", error);
+    return false;
+  }
+}

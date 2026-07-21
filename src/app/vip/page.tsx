@@ -1,17 +1,37 @@
 "use client";
 
-import { Crown, Check, ChevronLeft, CreditCard, X, QrCode } from "lucide-react";
+import { Crown, Check, ChevronLeft, CreditCard, X, QrCode, Loader2, Camera } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import qrImage from "@/qr/qrkh.jpg";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { upgradeToVip } from "@/lib/db";
 
 export default function VIPPage() {
   const { user } = useAuth();
   const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState<number>(1);
   const [showPayment, setShowPayment] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [timer, setTimer] = useState(299); // 4:59
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (showPayment && !isSuccess && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prev) => prev - 1);
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [showPayment, isSuccess, timer]);
+
+  const formatTime = (seconds: number) => {
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `0${m}:${s < 10 ? '0' : ''}${s}`;
+  };
 
   const plans = [
     {
@@ -145,39 +165,119 @@ export default function VIPPage() {
 
       {/* Payment Modal */}
       {showPayment && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#111111] border border-white/10 rounded-3xl p-6 max-w-sm w-full relative animate-in fade-in zoom-in duration-300">
-            <button 
-              onClick={() => setShowPayment(false)}
-              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-            
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
-                <QrCode className="w-8 h-8" />
+        <div className="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-[#090B10] w-full max-w-md rounded-2xl overflow-hidden flex flex-col max-h-[90vh] shadow-2xl border border-gray-900">
+            {/* Header */}
+            <div className="p-4 flex justify-between items-center border-b border-gray-900">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-gray-400 font-medium">Member Of</span>
+                <span className="bg-red-600 text-white text-xs px-2 py-0.5 rounded font-bold tracking-wider">KHQR</span>
               </div>
-              <h3 className="text-white text-xl font-bold">ស្កេនដើម្បីបង់ប្រាក់</h3>
-              <p className="text-gray-400 text-sm mt-1">
-                សូមស្កេន QR Code ខាងក្រោមដើម្បីទូទាត់សម្រាប់កញ្ចប់ {plans.find(p => p.id === selectedPlan)?.name} ក្នុងតម្លៃ {plans.find(p => p.id === selectedPlan)?.price}
-              </p>
+              <button onClick={() => setShowPayment(false)} className="text-gray-400 hover:text-white transition-colors">
+                <X className="w-5 h-5" />
+              </button>
             </div>
-            
-            <div className="bg-white p-4 rounded-2xl mb-6">
-              <img 
-                src={qrImage.src} 
-                alt="KHQR Payment" 
-                className="w-full aspect-square object-contain rounded-xl"
-              />
+
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col items-center">
+              {isSuccess ? (
+                <div className="text-center py-8 w-full">
+                  <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-4 text-green-500">
+                    <Check className="w-10 h-10" />
+                  </div>
+                  <h3 className="text-white text-2xl font-bold mb-2">ជោគជ័យ!</h3>
+                  <p className="text-gray-400 text-sm mb-6">
+                    សូមអបអរសាទរ! លោកអ្នកបានក្លាយជាសមាជិក VIP ជាផ្លូវការ។
+                  </p>
+                  <button 
+                    onClick={() => {
+                      setShowPayment(false);
+                      router.push("/profile");
+                    }}
+                    className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-xl transition-colors"
+                  >
+                    ចូលទៅកាន់គណនី
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <div className="flex items-center gap-2 mt-4 mb-6">
+                    <span className="text-gray-400 text-xs">យើងរង់ចាំការស្កេនទូទាត់</span>
+                    <div className="w-4 h-4 rounded-full border-2 border-gray-600 border-t-[#3b82f6] animate-spin"></div>
+                    <span className="text-gray-300 text-xs font-mono">{formatTime(timer)}</span>
+                  </div>
+
+                  <h3 className="text-white text-sm font-medium mb-6 text-center px-4">
+                    សូមស្កេនទូទាត់ទឹកប្រាក់ដើម្បីក្លាយជាសមាជិក VIP
+                  </h3>
+
+                  <div className="relative w-56 mb-6">
+                    {/* Red Brackets Frame */}
+                    <div className="absolute -top-3 -left-3 w-5 h-5 border-t-[3px] border-l-[3px] border-red-500 rounded-tl-lg"></div>
+                    <div className="absolute -top-3 -right-3 w-5 h-5 border-t-[3px] border-r-[3px] border-red-500 rounded-tr-lg"></div>
+                    <div className="absolute -bottom-3 -left-3 w-5 h-5 border-b-[3px] border-l-[3px] border-red-500 rounded-bl-lg"></div>
+                    <div className="absolute -bottom-3 -right-3 w-5 h-5 border-b-[3px] border-r-[3px] border-red-500 rounded-br-lg"></div>
+
+                    {/* KHQR Card */}
+                    <div className="bg-white rounded-xl overflow-hidden w-full">
+                      <div className="bg-[#c22026] h-10 flex items-center justify-center relative">
+                          <span className="text-white font-bold tracking-widest text-base">KHQR</span>
+                          <div className="absolute right-0 top-0 bottom-0 w-6 bg-white" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 100%)" }}></div>
+                      </div>
+                      
+                      <div className="p-3 flex flex-col items-center">
+                          <div className="w-full text-left mb-2">
+                            <div className="text-gray-800 font-medium text-xs">PhumCine VIP</div>
+                            <div className="text-black font-bold text-sm">{plans.find(p => p.id === selectedPlan)?.price}</div>
+                          </div>
+
+                          <div className="w-full h-[1px] bg-gray-100 mb-3"></div>
+
+                          <div className="w-36 h-36 relative mb-3 bg-white rounded-lg p-1">
+                            <img src={qrImage.src} alt="KHQR" className="w-full h-full object-contain rounded" />
+                          </div>
+
+                          <div className="text-center text-[10px] text-gray-600 font-medium">
+                            S260720216721263
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <p className="text-gray-400 text-center text-[10px] px-4 mb-2 leading-relaxed">
+                    សូមទាញយក QR ឬ Screenshot<br />ដើម្បីយកទៅទូទាត់ក្នុងកម្មវិធីធនាគារ។
+                  </p>
+                  <p className="text-gray-500 text-center text-[9px] mb-6">
+                    ចំណាំ ៖ KHQR មួយស្កេនបានតែម្តងគត់ !
+                  </p>
+
+                  <button 
+                    disabled={isProcessing}
+                    onClick={async () => {
+                      if (!user) return;
+                      setIsProcessing(true);
+                      await new Promise(resolve => setTimeout(resolve, 2000));
+                      const planName = plans.find(p => p.id === selectedPlan)?.name || "VIP";
+                      await upgradeToVip(user.uid, planName);
+                      setIsProcessing(false);
+                      setIsSuccess(true);
+                    }}
+                    className="w-full max-w-[200px] py-3 bg-white text-black rounded-xl font-bold flex items-center justify-center gap-2 active:scale-95 transition-transform text-xs shadow-lg mb-4 disabled:opacity-50"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                        កំពុងផ្ទៀងផ្ទាត់...
+                      </>
+                    ) : (
+                      <>
+                        ថតចម្លង (screenshot)
+                        <Camera className="w-3.5 h-3.5" />
+                      </>
+                    )}
+                  </button>
+                </>
+              )}
             </div>
-            
-            <button 
-              onClick={() => setShowPayment(false)}
-              className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition-colors"
-            >
-              បិទ (Close)
-            </button>
           </div>
         </div>
       )}
