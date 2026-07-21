@@ -5,7 +5,7 @@ import TopNav from "@/components/layout/TopNav";
 import HeroCarousel from "@/components/HeroCarousel";
 import HorizontalMovieList from "@/components/HorizontalMovieList";
 import { featuredMovies, trendingMovies, mostWatchedMovies, allMoviesList, Movie } from "@/lib/mockData";
-import { Share2 } from "lucide-react";
+import { Share2, Sparkles } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getAllUserMovies } from "@/lib/db";
 
@@ -58,42 +58,47 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-background animate-in fade-in duration-700 pb-20">
+    <main className="min-h-screen bg-background pb-20 relative">
+      {/* Ambient background gradient */}
+      <div className="absolute top-0 left-0 right-0 h-[600px] pointer-events-none overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-radial from-red-600/8 via-transparent to-transparent blur-3xl" />
+      </div>
+
       <TopNav />
       
       {/* Featured Carousel */}
-      <div className="mt-2 max-w-6xl mx-auto w-full">
+      <div className="mt-2 max-w-6xl mx-auto w-full animate-fadeInUp relative z-10">
         <HeroCarousel movies={featuredMovies} onIndexChange={setActiveHeroIndex} />
       </div>
       
       {/* Movie Details Snippet for the active featured movie */}
       {activeMovie && (
-        <div className="px-4 py-4 mt-2 mx-4 md:mx-auto max-w-6xl bg-[#1a1b23] rounded-2xl border border-gray-800">
+        <div className="px-4 py-5 mt-3 mx-4 md:mx-auto max-w-6xl glass-card rounded-2xl animate-fadeInUp relative z-10" style={{ animationDelay: '0.15s' }}>
           <div className="flex justify-between items-start mb-4">
             <h2 className="text-[17px] md:text-xl lg:text-2xl font-bold text-white leading-snug">{activeMovie.title}</h2>
             <button 
               onClick={handleShare}
-              className="bg-red-600 p-2 rounded-full shadow-lg shadow-red-600/30 flex-shrink-0 ml-4 active:scale-95 transition-transform"
+              className="gradient-red-bright p-2.5 rounded-full shadow-glow-red flex-shrink-0 ml-4 active:scale-90 transition-all duration-200 hover:shadow-glow-red-lg"
             >
                <Share2 className="w-4 h-4 text-white" strokeWidth={2.5} />
             </button>
           </div>
           
           <div className="flex flex-wrap gap-2 mb-4">
-            <span className="bg-red-600 text-white font-bold text-[10px] md:text-xs lg:text-sm px-2 py-0.5 md:px-3 md:py-1 rounded uppercase tracking-wider">{activeMovie.year}</span>
-            <span className="bg-red-600 text-white font-bold text-[10px] md:text-xs lg:text-sm px-2 py-0.5 md:px-3 md:py-1 rounded uppercase tracking-wider">{activeMovie.genre}</span>
+            <span className="gradient-red-bright text-white font-bold text-[10px] md:text-xs lg:text-sm px-2.5 py-1 md:px-3 md:py-1 rounded-full uppercase tracking-wider shadow-glow-red">{activeMovie.year}</span>
+            <span className="glass text-white font-medium text-[10px] md:text-xs lg:text-sm px-2.5 py-1 md:px-3 md:py-1 rounded-full tracking-wider">{activeMovie.genre}</span>
           </div>
           
           <div className="grid grid-cols-2 gap-y-3 gap-x-4 text-[11px] md:text-sm lg:text-base text-gray-400 mb-1">
-            <div className="flex items-center"><span className="inline-block w-[75px] md:w-[100px]">ភាសា:</span> <span className="text-red-500 font-bold">{activeMovie.language}</span></div>
-            <div className="flex items-center"><span className="inline-block w-[75px] md:w-[100px]">រយៈពេល:</span> <span className="text-red-500 font-bold">{activeMovie.duration}</span></div>
-            <div className="flex items-center"><span className="inline-block w-[75px] md:w-[100px]">គុណភាព:</span> <span className="text-red-500 font-bold">{activeMovie.quality}</span></div>
-            <div className="flex items-center"><span className="inline-block w-[75px] md:w-[100px]">ប្រភេទរឿង:</span> <span className="bg-green-700/80 text-white px-2 py-0.5 md:px-3 md:py-1 rounded-full font-bold text-[10px] md:text-xs lg:text-sm">ទិញ</span></div>
+            <div className="flex items-center"><span className="inline-block w-[75px] md:w-[100px] text-gray-500">ភាសា:</span> <span className="text-red-400 font-semibold">{activeMovie.language}</span></div>
+            <div className="flex items-center"><span className="inline-block w-[75px] md:w-[100px] text-gray-500">រយៈពេល:</span> <span className="text-red-400 font-semibold">{activeMovie.duration}</span></div>
+            <div className="flex items-center"><span className="inline-block w-[75px] md:w-[100px] text-gray-500">គុណភាព:</span> <span className="text-green-400 font-semibold">{activeMovie.quality}</span></div>
+            <div className="flex items-center"><span className="inline-block w-[75px] md:w-[100px] text-gray-500">ប្រភេទរឿង:</span> <span className="bg-green-500/20 text-green-400 px-2.5 py-0.5 md:px-3 md:py-1 rounded-full font-bold text-[10px] md:text-xs lg:text-sm border border-green-500/20">ទិញ</span></div>
           </div>
         </div>
       )}
 
-      <div className="mt-4 max-w-6xl mx-auto w-full flex flex-col gap-2">
+      <div className="mt-6 max-w-6xl mx-auto w-full flex flex-col gap-1 relative z-10">
         {watchingMovies.length > 0 && (
           <HorizontalMovieList 
             title="បន្តការទស្សនា" 

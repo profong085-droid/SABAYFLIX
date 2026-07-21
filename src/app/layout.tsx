@@ -2,6 +2,13 @@ import "./globals.css";
 import BottomNav from "@/components/layout/BottomNav";
 import { AuthProvider } from "@/context/AuthContext";
 import type { Viewport } from "next";
+import { Inter } from "next/font/google";
+
+const inter = Inter({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-inter",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -73,8 +80,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="km" suppressHydrationWarning>
-      <body className="antialiased bg-black text-textPrimary flex justify-center min-h-screen" suppressHydrationWarning>
+    <html lang="km" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@300;400;700;900&display=swap" rel="stylesheet" />
+      </head>
+      <body className="antialiased bg-black text-textPrimary flex justify-center min-h-screen font-sans" suppressHydrationWarning>
         <AuthProvider>
           <div className="w-full bg-background min-h-screen relative shadow-2xl pb-16 overflow-x-hidden">
             {children}
