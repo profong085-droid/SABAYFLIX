@@ -64,6 +64,24 @@ export default function MovieView({ movie }: MovieViewProps) {
     setIsDownloaded(added);
   };
 
+  const handleShare = async () => {
+    const shareData = {
+      title: movie.title,
+      text: `សូមទស្សនារឿង ${movie.title} នៅលើ PhumCine!`,
+      url: window.location.href
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert("បានចម្លងតំណរភ្ជាប់ (Link Copied)!");
+    }
+  };
+
   const recommendedMovies = allMoviesList.filter(m => m.id !== movie.id).slice(0, 8);
 
   return (
@@ -92,7 +110,9 @@ export default function MovieView({ movie }: MovieViewProps) {
                 >
                   {isDownloaded ? <CheckCircle2 className="w-5 h-5" /> : <Download className="w-5 h-5" />}
                 </button>
-                <button className="bg-white/10 hover:bg-white/20 p-2.5 rounded-full shadow-lg transition-all backdrop-blur-md border border-white/10">
+                <button 
+                  onClick={handleShare}
+                  className="bg-white/10 hover:bg-white/20 p-2.5 rounded-full shadow-lg transition-all backdrop-blur-md border border-white/10">
                   <Share2 className="w-5 h-5 text-white" />
                 </button>
               </div>

@@ -11,6 +11,25 @@ export default function Home() {
   const [activeHeroIndex, setActiveHeroIndex] = useState(0);
   const activeMovie = featuredMovies[activeHeroIndex];
 
+  const handleShare = async () => {
+    if (!activeMovie) return;
+    const url = `${window.location.origin}/movie/${activeMovie.id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: activeMovie.title,
+          text: `សូមទស្សនារឿង ${activeMovie.title} នៅលើ PhumCine!`,
+          url: url
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      alert("បានចម្លងតំណរភ្ជាប់ (Link Copied)!");
+    }
+  };
+
   return (
     <main className="min-h-screen bg-background animate-in fade-in duration-700 pb-20">
       <TopNav />
@@ -25,7 +44,10 @@ export default function Home() {
         <div className="px-4 py-4 mt-2 mx-4 md:mx-auto max-w-6xl bg-[#1a1b23] rounded-2xl border border-gray-800">
           <div className="flex justify-between items-start mb-4">
             <h2 className="text-[17px] md:text-xl lg:text-2xl font-bold text-white leading-snug">{activeMovie.title}</h2>
-            <button className="bg-red-600 p-2 rounded-full shadow-lg shadow-red-600/30 flex-shrink-0 ml-4 active:scale-95 transition-transform">
+            <button 
+              onClick={handleShare}
+              className="bg-red-600 p-2 rounded-full shadow-lg shadow-red-600/30 flex-shrink-0 ml-4 active:scale-95 transition-transform"
+            >
                <Share2 className="w-4 h-4 text-white" strokeWidth={2.5} />
             </button>
           </div>

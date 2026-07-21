@@ -24,8 +24,14 @@ export default function MovieCard({ movie }: MovieCardProps) {
         <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
           <span className="bg-red-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-full shadow-sm">សមាជិក</span>
          
-          <button className="p-1">
-            <Heart className="w-5 h-5 text-white drop-shadow-md" />
+          <button 
+            className="p-1 z-10" 
+            onClick={(e) => { 
+              e.preventDefault(); 
+              alert("មុខងារនេះនឹងអនុញ្ញាតឲ្យអ្នករក្សាទុករឿងទៅក្នុងបញ្ជីចំណូលចិត្តនៅពេលក្រោយ!"); 
+            }}
+          >
+            <Heart className="w-5 h-5 text-white drop-shadow-md hover:fill-white transition-all" />
           </button>
         </div>
       </div>
