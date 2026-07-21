@@ -21,6 +21,14 @@ export const metadata = {
   authors: [{ name: "PhumCine Team" }],
   creator: "PhumCine",
   publisher: "PhumCine",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "black-translucent",
+    title: "PhumCine",
+  },
+  formatDetection: {
+    telephone: false,
+  },
   verification: {
     google: "5rexrdgbpnsKJSydQmuKcOW5JgqOyKYP_DPirlC0hcs",
   },
@@ -73,6 +81,21 @@ export default function RootLayout({
             <BottomNav />
           </div>
         </AuthProvider>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              if ('serviceWorker' in navigator) {
+                window.addEventListener('load', function() {
+                  navigator.serviceWorker.register('/sw.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful');
+                  }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                  });
+                });
+              }
+            `,
+          }}
+        />
       </body>
     </html>
   );
