@@ -58,8 +58,9 @@ export default function HeroCarousel({ movies, onIndexChange }: HeroCarouselProp
                     src={movie.poster}
                     alt={movie.title}
                     fill
-                    className="object-cover"
-                    priority={isActive}
+                    priority={index === 0}
+                    sizes="(max-width: 1200px) 100vw, 1200px"
+                    className="object-cover transition-transform duration-700 hover:scale-105"
                   />
                   {/* subtle overlay to darken edges */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>

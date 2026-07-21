@@ -2,13 +2,14 @@
 
 import { Gift, Bell } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function TopNav() {
   return (
     <div className="bg-background z-40 sticky top-0 border-b border-gray-900/50">
       <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
         <Link href="/" className="flex items-center gap-2">
-        <img src="/PHUMCINE.png" alt="PhumCine Logo" className="h-10 md:h-16 w-auto object-contain" />
+        <Image src="/PHUMCINE.png" alt="PhumCine Logo" width={180} height={64} priority className="h-10 md:h-16 w-auto object-contain" />
         <span className="text-lg font-bold tracking-wider text-white">PHUMCINE</span>
         </Link>
 

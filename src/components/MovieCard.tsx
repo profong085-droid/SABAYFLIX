@@ -16,6 +16,7 @@ export default function MovieCard({ movie }: MovieCardProps) {
           src={movie.poster}
           alt={movie.title}
           fill
+          sizes="(max-width: 768px) 33vw, (max-width: 1200px) 20vw, 15vw"
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
         />
         
