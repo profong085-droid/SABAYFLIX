@@ -129,8 +129,16 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
     if (!container || !video) return;
 
     if (!document.fullscreenElement && !(document as any).webkitFullscreenElement) {
+      const lockLandscape = () => {
+        if (window.screen && window.screen.orientation && (window.screen.orientation as any).lock) {
+          (window.screen.orientation as any).lock("landscape").catch((err: any) => console.log("Orientation lock failed:", err));
+        }
+      };
+
       if (container.requestFullscreen) {
-        container.requestFullscreen().catch((err: any) => {
+        container.requestFullscreen().then(() => {
+          lockLandscape();
+        }).catch((err: any) => {
           console.warn("Fullscreen error:", err);
           if (video.webkitEnterFullscreen) {
             video.webkitEnterFullscreen();
@@ -140,14 +148,24 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
         });
       } else if (container.webkitRequestFullscreen) {
         container.webkitRequestFullscreen();
+        lockLandscape();
       } else if (video.webkitEnterFullscreen) {
         video.webkitEnterFullscreen();
       }
     } else {
+      const unlockOrientation = () => {
+        if (window.screen && window.screen.orientation && window.screen.orientation.unlock) {
+          window.screen.orientation.unlock();
+        }
+      };
+
       if (document.exitFullscreen) {
-        document.exitFullscreen().catch(err => console.error(err));
+        document.exitFullscreen().then(() => {
+          unlockOrientation();
+        }).catch(err => console.error(err));
       } else if ((document as any).webkitExitFullscreen) {
         (document as any).webkitExitFullscreen();
+        unlockOrientation();
       }
     }
   };
