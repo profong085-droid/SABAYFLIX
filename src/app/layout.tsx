@@ -21,6 +21,9 @@ export const metadata = {
   authors: [{ name: "PhumCine Team" }],
   creator: "PhumCine",
   publisher: "PhumCine",
+  verification: {
+    google: "5rexrdgbpnsKJSydQmuKcOW5JgqOyKYP_DPirlC0hcs",
+  },
   robots: {
     index: true,
     follow: true,
