@@ -11,7 +11,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata = {
-  metadataBase: new URL("https://phumcine.com"), // Placeholder domain, swap later
+  metadataBase: new URL("https://sabayflix-4.vercel.app"), 
   title: {
     default: "PhumCine - មើលរឿងខ្មែរនិងបរទេសកម្រិតច្បាស់ 4K",
     template: "%s | PhumCine",
@@ -38,7 +38,7 @@ export const metadata = {
   openGraph: {
     title: "PhumCine - មើលរឿងខ្មែរនិងបរទេសកម្រិតច្បាស់ 4K",
     description: "មើលរឿងភាគ រឿងដុំថ្មីៗ ល្បីៗជារៀងរាល់ថ្ងៃ គ្មានពាណិជ្ជកម្មរំខាន ជាមួយ PhumCine។",
-    url: "https://phumcine.com",
+    url: "https://sabayflix-4.vercel.app",
     type: "website",
     siteName: "PhumCine",
     locale: "km_KH",
@@ -55,7 +55,7 @@ export const metadata = {
   },
   manifest: "/manifest.json",
   alternates: {
-    canonical: "https://phumcine.com",
+    canonical: "https://sabayflix-4.vercel.app",
   },
 };
 

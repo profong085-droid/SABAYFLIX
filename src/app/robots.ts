@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
       allow: '/',
       disallow: ['/admin/', '/api/', '/_next/', '/private/'],
     },
-    sitemap: 'https://phumcine.com/sitemap.xml',
+    sitemap: 'https://sabayflix-4.vercel.app/sitemap.xml',
   }
 }

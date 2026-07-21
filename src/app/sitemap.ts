@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next'
 import { allMoviesList } from '@/lib/mockData'
  
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://phumcine.com'
+  const baseUrl = 'https://sabayflix-4.vercel.app'
   
   // Static Routes
   const routes = [
