@@ -22,8 +22,12 @@ export async function getUserMovies(userId: string, type: MovieListType): Promis
       });
       return [];
     }
-  } catch (error) {
-    console.error("Error fetching user movies:", error);
+  } catch (error: any) {
+    if (error?.message?.includes("client is offline")) {
+      console.warn("Firestore: Client is offline. Returning empty list.");
+    } else {
+      console.error("Error fetching user movies:", error);
+    }
     return [];
   }
 }
@@ -38,8 +42,12 @@ export async function getAllUserMovies(userId: string) {
       return docSnap.data() as Record<MovieListType, string[]>;
     }
     return { purchased: [], saved: [], downloaded: [], watching: [] };
-  } catch (error) {
-    console.error("Error fetching all user movies:", error);
+  } catch (error: any) {
+    if (error?.message?.includes("client is offline")) {
+      console.warn("Firestore: Client is offline. Returning empty lists.");
+    } else {
+      console.error("Error fetching all user movies:", error);
+    }
     return { purchased: [], saved: [], downloaded: [], watching: [] };
   }
 }
@@ -76,8 +84,12 @@ export async function toggleUserMovie(userId: string, type: MovieListType, movie
     }
 
     return isAdded;
-  } catch (error) {
-    console.error(`Error toggling movie in ${type}:`, error);
+  } catch (error: any) {
+    if (error?.message?.includes("client is offline")) {
+      console.warn(`Firestore: Client is offline. Could not toggle movie in ${type}.`);
+    } else {
+      console.error(`Error toggling movie in ${type}:`, error);
+    }
     return false;
   }
 }

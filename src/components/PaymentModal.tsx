@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { X, CreditCard, ShoppingCart, Info, ScanLine, Camera } from "lucide-react";
 import { addStoredItem } from "@/lib/storage";
 import Image from "next/image";
+import qrImage from "@/qr/qrkh.jpg";
 
 interface PaymentModalProps {
   movieId: string;
@@ -195,11 +196,8 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
 
                       <div className="w-full h-[1px] bg-gray-100 mb-3"></div>
 
-                      <div className="w-36 h-36 relative mb-3">
-                         <img src="https://placehold.co/400x400/FFFFFF/000000/png?text=KHQR+Code" alt="KHQR" className="w-full h-full object-contain" />
-                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 bg-[#0b3c5d] rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                            <span className="text-white font-bold text-[10px]">៛</span>
-                         </div>
+                      <div className="w-36 h-36 relative mb-3 bg-white rounded-lg p-1">
+                         <img src={qrImage.src} alt="KHQR" className="w-full h-full object-contain rounded" />
                       </div>
 
                       <div className="text-center text-[10px] text-gray-600 font-medium">

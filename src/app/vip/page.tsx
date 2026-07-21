@@ -1,11 +1,13 @@
 "use client";
 
-import { Crown, Check, ChevronLeft, CreditCard } from "lucide-react";
+import { Crown, Check, ChevronLeft, CreditCard, X, QrCode } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import qrImage from "@/qr/qrkh.jpg";
 
 export default function VIPPage() {
   const [selectedPlan, setSelectedPlan] = useState<number>(1);
+  const [showPayment, setShowPayment] = useState(false);
 
   const plans = [
     {
@@ -116,7 +118,10 @@ export default function VIPPage() {
 
         {/* Action Button */}
         <div className="max-w-md mx-auto">
-           <button className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-[0_10px_30px_rgba(220,38,38,0.3)] hover:shadow-[0_10px_40px_rgba(220,38,38,0.4)] transition-all active:scale-95 flex items-center justify-center gap-2 text-lg">
+           <button 
+             onClick={() => setShowPayment(true)}
+             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-[0_10px_30px_rgba(220,38,38,0.3)] hover:shadow-[0_10px_40px_rgba(220,38,38,0.4)] transition-all active:scale-95 flex items-center justify-center gap-2 text-lg"
+           >
              <CreditCard className="w-6 h-6" />
              បង់ប្រាក់ឥឡូវនេះ (Pay Now)
            </button>
@@ -126,6 +131,45 @@ export default function VIPPage() {
         </div>
 
       </div>
+
+      {/* Payment Modal */}
+      {showPayment && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-[#111111] border border-white/10 rounded-3xl p-6 max-w-sm w-full relative animate-in fade-in zoom-in duration-300">
+            <button 
+              onClick={() => setShowPayment(false)}
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-full transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+            
+            <div className="text-center mb-6">
+              <div className="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-4 text-red-500">
+                <QrCode className="w-8 h-8" />
+              </div>
+              <h3 className="text-white text-xl font-bold">ស្កេនដើម្បីបង់ប្រាក់</h3>
+              <p className="text-gray-400 text-sm mt-1">
+                សូមស្កេន QR Code ខាងក្រោមដើម្បីទូទាត់សម្រាប់កញ្ចប់ {plans.find(p => p.id === selectedPlan)?.name} ក្នុងតម្លៃ {plans.find(p => p.id === selectedPlan)?.price}
+              </p>
+            </div>
+            
+            <div className="bg-white p-4 rounded-2xl mb-6">
+              <img 
+                src={qrImage.src} 
+                alt="KHQR Payment" 
+                className="w-full aspect-square object-contain rounded-xl"
+              />
+            </div>
+            
+            <button 
+              onClick={() => setShowPayment(false)}
+              className="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 rounded-xl transition-colors"
+            >
+              បិទ (Close)
+            </button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

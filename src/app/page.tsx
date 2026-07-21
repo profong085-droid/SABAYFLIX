@@ -44,10 +44,10 @@ export default function Home() {
         </div>
       )}
 
-      <div className="mt-4 max-w-6xl mx-auto w-full">
+      <div className="mt-4 max-w-6xl mx-auto w-full flex flex-col gap-2">
         <HorizontalMovieList 
           title="រឿងថ្មីៗទើបបញ្ចូល" 
-          movies={allMoviesList.slice(-3)} 
+          movies={allMoviesList.slice(-10).reverse()} 
           viewAllLink="/movies?filter=new" 
         />
         
@@ -64,9 +64,21 @@ export default function Home() {
         />
 
         <HorizontalMovieList 
-          title="រឿងសកម្ម" 
-          movies={allMoviesList.filter(m => m.genre === "សកម្មភាព")} 
+          title="រឿងសកម្មភាព" 
+          movies={allMoviesList.filter(m => m.genre === "សកម្មភាព" || m.genre === "បាញ់ប្រហារ")} 
           viewAllLink="/movies?filter=action" 
+        />
+
+        <HorizontalMovieList 
+          title="រឿងមនោសញ្ចេតនា" 
+          movies={allMoviesList.filter(m => m.genre === "មនោសញ្ចេតនា" || m.type === "រឿងភាគ")} 
+          viewAllLink="/movies?filter=romance" 
+        />
+
+        <HorizontalMovieList 
+          title="រឿងទិព្វ និងរន្ធត់" 
+          movies={allMoviesList.filter(m => m.genre === "ទិព្វ" || m.genre === "ភ័យរន្ធត់")} 
+          viewAllLink="/movies?filter=horror" 
         />
       </div>
     </main>
