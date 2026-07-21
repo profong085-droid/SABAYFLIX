@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, Share2 } from "lucide-react";
+import { Heart } from "lucide-react";
 import type { Movie } from "@/lib/mockData";
 import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
@@ -43,24 +43,6 @@ export default function MovieCard({ movie, progress }: MovieCardProps) {
     setIsSaved(added);
   };
 
-  const handleShare = async (e: React.MouseEvent) => {
-    e.preventDefault(); // Prevent navigating to movie
-    const url = `${window.location.origin}/movie/${movie.id}`;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: movie.title,
-          text: `សូមទស្សនារឿង ${movie.title} នៅលើ PhumCine!`,
-          url: url
-        });
-      } catch (err) {
-        console.log(err);
-      }
-    } else {
-      navigator.clipboard.writeText(url);
-      alert("បានចម្លងតំណរភ្ជាប់ (Link Copied)!");
-    }
-  };
 
   return (
     <Link href={`/movie/${movie.id}`} className="group relative flex flex-col w-full overflow-hidden rounded-xl bg-surface border border-gray-800 transition-transform active:scale-95">
@@ -84,12 +66,6 @@ export default function MovieCard({ movie, progress }: MovieCardProps) {
               onClick={handleSave}
             >
               <Heart className={`w-4 h-4 transition-all ${isSaved ? 'text-red-500 fill-red-500' : 'text-white hover:text-red-400'}`} />
-            </button>
-            <button 
-              className="p-1.5 bg-black/40 rounded-full backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors" 
-              onClick={handleShare}
-            >
-              <Share2 className="w-4 h-4 text-white hover:text-blue-400 transition-colors" />
             </button>
           </div>
         </div>
