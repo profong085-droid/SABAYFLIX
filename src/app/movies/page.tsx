@@ -17,12 +17,8 @@ export default function AllMoviesPage() {
     <main className="min-h-screen bg-background pb-20">
       <div className="flex items-center justify-between p-4 bg-background sticky top-0 z-40">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center transform rotate-12">
-            <div className="w-4 h-4 bg-white rounded-sm transform -rotate-12 flex items-center justify-center">
-              <div className="w-2 h-2 bg-primary rounded-full" />
-            </div>
-          </div>
-          <span className="text-xl font-bold tracking-wider text-white">SABAYFLIX</span>
+          <img src="/PHUMCINE.png" alt="PhumCine Logo" className="h-10 md:h-16 w-auto object-contain" />
+          <span className="text-xl font-bold tracking-wider text-white">PHUMCINE</span>
         </Link>
         <span className="text-sm text-textSecondary">រឿងទាំងអស់</span>
       </div>

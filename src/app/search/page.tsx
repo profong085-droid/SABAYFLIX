@@ -19,10 +19,8 @@ export default function SearchPage() {
     <main className="min-h-screen bg-[#111111] pb-20 font-sans">
       <div className="flex items-center justify-between p-4 bg-[#111111] sticky top-0 z-40">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-full bg-red-600 flex items-center justify-center">
-             <Play className="w-4 h-4 text-white fill-white" />
-          </div>
-          <span className="text-xl font-bold tracking-widest text-white">SABAYFLIX</span>
+          <img src="/PHUMCINE.png" alt="PhumCine Logo" className="h-10 md:h-16 w-auto object-contain" />
+          <span className="text-xl font-bold tracking-widest text-white">PHUMCINE</span>
         </Link>
       </div>
       

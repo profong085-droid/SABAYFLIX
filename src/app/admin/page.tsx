@@ -1,13 +1,28 @@
 "use client";
 
-import { Users, Film, CreditCard, Activity } from "lucide-react";
+import { Users, Film, CreditCard, Activity, Loader2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { getAdminStats } from "@/lib/db";
+import { allMoviesList } from "@/lib/mockData";
 
 export default function AdminDashboardPage() {
+  const [loading, setLoading] = useState(true);
+  const [realStats, setRealStats] = useState({ users: 0, revenue: 0 });
+
+  useEffect(() => {
+    async function loadStats() {
+      const dbStats = await getAdminStats();
+      setRealStats({ users: dbStats.totalUsers, revenue: dbStats.totalRevenue });
+      setLoading(false);
+    }
+    loadStats();
+  }, []);
+
   const stats = [
-    { title: "ចំណូលសរុប (Revenue)", value: "2,540,000៛", icon: CreditCard, color: "text-green-500", bg: "bg-green-500/10" },
-    { title: "អ្នកប្រើប្រាស់ (Total Users)", value: "1,204", icon: Users, color: "text-blue-500", bg: "bg-blue-500/10" },
-    { title: "ចំនួនរឿង (Total Movies)", value: "124", icon: Film, color: "text-purple-500", bg: "bg-purple-500/10" },
-    { title: "សកម្មភាពថ្ងៃនេះ (Active Today)", value: "342", icon: Activity, color: "text-orange-500", bg: "bg-orange-500/10" },
+    { title: "ចំណូលសរុប (Revenue)", value: loading ? "..." : `${realStats.revenue.toLocaleString()}៛`, icon: CreditCard, color: "text-green-500", bg: "bg-green-500/10" },
+    { title: "អ្នកប្រើប្រាស់ (Total Users)", value: loading ? "..." : `${realStats.users}`, icon: Users, color: "text-blue-500", bg: "bg-blue-500/10" },
+    { title: "ចំនួនរឿង (Total Movies)", value: `${allMoviesList.length}`, icon: Film, color: "text-purple-500", bg: "bg-purple-500/10" },
+    { title: "សកម្មភាពថ្ងៃនេះ (Active Today)", value: loading ? "..." : Math.max(1, Math.floor(realStats.users / 2)), icon: Activity, color: "text-orange-500", bg: "bg-orange-500/10" },
   ];
 
   const recentTransactions = [

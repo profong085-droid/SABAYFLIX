@@ -8,13 +8,8 @@ export default function TopNav() {
     <div className="bg-background z-40 sticky top-0 border-b border-gray-900/50">
       <div className="max-w-6xl mx-auto flex items-center justify-between p-4">
         <Link href="/" className="flex items-center gap-2">
-        {/* Simple Logo Replacement */}
-        <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center transform rotate-12">
-          <div className="w-4 h-4 bg-white rounded-sm transform -rotate-12 flex items-center justify-center">
-            <div className="w-2 h-2 bg-primary rounded-full" />
-          </div>
-        </div>
-        <span className="text-lg font-bold tracking-wider text-white">SABAYFLIX</span>
+        <img src="/PHUMCINE.png" alt="PhumCine Logo" className="h-10 md:h-16 w-auto object-contain" />
+        <span className="text-lg font-bold tracking-wider text-white">PHUMCINE</span>
         </Link>
 
       {/* Desktop Navigation Links */}

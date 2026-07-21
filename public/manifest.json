@@ -1,0 +1,21 @@
+{
+  "name": "PhumCine",
+  "short_name": "PhumCine",
+  "description": "PhumCine គឺជាគេហទំព័រសម្រាប់ទស្សនាភាពយន្តខ្មែរ និងបរទេសដែលមានគុណភាពខ្ពស់។",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#111111",
+  "theme_color": "#dc2626",
+  "icons": [
+    {
+      "src": "/PHUMCINE.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/PHUMCINE.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

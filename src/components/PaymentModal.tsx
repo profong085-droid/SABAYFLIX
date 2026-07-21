@@ -127,7 +127,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400 text-xs">ទៅគណនី៖</span>
-                    <span className="text-white text-xs">SabayFlix</span>
+                    <span className="text-white text-xs">PhumCine</span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-400 text-xs">កាលបរិច្ឆេទ៖</span>
@@ -172,7 +172,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
                 <span className="bg-red-600 text-white text-xs px-2 py-0.5 rounded font-bold tracking-wider">KHQR</span>
               </div>
             ) : (
-              <div className="text-white font-bold text-lg">SabayFlix</div>
+              <div className="text-white font-bold text-lg">PhumCine</div>
             )}
             <button onClick={() => setStep(1)} className="text-gray-400 hover:text-white transition-colors">
               <X className="w-5 h-5" />
@@ -207,7 +207,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
                    
                    <div className="p-3 flex flex-col items-center">
                       <div className="w-full text-left mb-2">
-                         <div className="text-gray-800 font-medium text-xs">SabayFlix</div>
+                         <div className="text-gray-800 font-medium text-xs">PhumCine</div>
                          <div className="text-black font-bold text-sm">4,000៛</div>
                       </div>
 

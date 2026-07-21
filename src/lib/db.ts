@@ -1,5 +1,5 @@
 import { db } from "./firebase";
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, collection, getDocs } from "firebase/firestore";
 
 export type MovieListType = "purchased" | "saved" | "downloaded" | "watching";
 
@@ -138,5 +138,31 @@ export async function getWatchProgress(userId: string, movieId: string): Promise
       console.error(`Error getting watch progress for movie ${movieId}:`, error);
     }
     return 0;
+  }
+}
+
+// Get admin statistics (Total Users, Total Revenue)
+export async function getAdminStats(): Promise<{ totalUsers: number, totalRevenue: number }> {
+  try {
+    const usersSnap = await getDocs(collection(db, "users"));
+    let totalUsers = usersSnap.size;
+    let totalPurchases = 0;
+
+    usersSnap.forEach((doc) => {
+      const data = doc.data();
+      if (data.purchased && Array.isArray(data.purchased)) {
+        totalPurchases += data.purchased.length;
+      }
+    });
+
+    // Assume 4,000៛ per movie
+    const totalRevenue = totalPurchases * 4000;
+    
+    return { totalUsers, totalRevenue };
+  } catch (error: any) {
+    if (!error?.message?.includes("client is offline")) {
+      console.error("Error getting admin stats:", error);
+    }
+    return { totalUsers: 0, totalRevenue: 0 };
   }
 }

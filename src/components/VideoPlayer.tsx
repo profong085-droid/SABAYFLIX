@@ -125,7 +125,10 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
   const toggleFullscreen = () => {
     if (containerRef.current) {
       if (!document.fullscreenElement) {
-        containerRef.current.requestFullscreen().catch(err => console.error(err));
+        containerRef.current.requestFullscreen().catch(err => {
+          console.warn("Fullscreen error:", err);
+          alert("មុខងារ Fullscreen មិនត្រូវបានអនុញ្ញាតក្នុងផ្ទាំង Preview នេះទេ។ សូមសាកល្បងបើកវា (Open in New Tab) ក្នុង Browser ទើបអាចប្រើបាន។");
+        });
       } else {
         document.exitFullscreen().catch(err => console.error(err));
       }

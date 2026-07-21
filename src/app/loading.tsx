@@ -1,14 +1,10 @@
 export default function Loading() {
   return (
     <div className="fixed inset-0 bg-background flex flex-col items-center justify-center z-50">
-      {/* SabayFlix Logo Pulse Animation */}
+      {/* PhumCine Logo Pulse Animation */}
       <div className="relative flex items-center gap-3">
-        <div className="w-12 h-12 rounded-xl bg-primary flex items-center justify-center transform rotate-12 animate-pulse shadow-lg shadow-primary/40">
-          <div className="w-6 h-6 bg-white rounded-md transform -rotate-12 flex items-center justify-center">
-            <div className="w-3 h-3 bg-primary rounded-full animate-bounce" />
-          </div>
-        </div>
-        <span className="text-3xl font-bold tracking-wider text-white">SABAYFLIX</span>
+        <img src="/PHUMCINE.png" alt="PhumCine Logo" className="h-16 md:h-24 w-auto object-contain animate-pulse" />
+        <span className="text-3xl font-bold tracking-wider text-white">PHUMCINE</span>
       </div>
       
       <div className="mt-8 flex gap-2">

@@ -136,12 +136,8 @@ export default function RegisterPage() {
       {/* Top Header */}
       <div className="absolute top-0 left-0 w-full p-4 md:p-8 z-20 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-red-600 flex items-center justify-center transform rotate-12">
-            <div className="w-4 h-4 bg-white rounded-sm transform -rotate-12 flex items-center justify-center">
-              <div className="w-2 h-2 bg-red-600 rounded-full" />
-            </div>
-          </div>
-          <span className="text-xl font-bold tracking-wider text-red-600 drop-shadow-lg">SABAYFLIX</span>
+          <img src="/PHUMCINE.png" alt="PhumCine Logo" className="h-14 md:h-20 w-auto object-contain" />
+          <span className="text-xl font-bold tracking-wider text-red-600 drop-shadow-lg">PHUMCINE</span>
         </Link>
       </div>
 

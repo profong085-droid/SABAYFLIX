@@ -94,7 +94,7 @@ export default function ProfilePage() {
               <div className="flex-1 overflow-hidden">
                 <div className="flex items-center gap-2 mb-1">
                   <h2 className="text-white text-xl md:text-2xl font-bold truncate">
-                    {user?.displayName || "សមាជិក SABAYFLIX"}
+                    {user?.displayName || "សមាជិក PHUMCINE"}
                   </h2>
                   <ShieldCheck className="w-4 h-4 md:w-5 md:h-5 text-blue-500 shrink-0" />
                 </div>

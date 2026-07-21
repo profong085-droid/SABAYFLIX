@@ -17,7 +17,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar */}
       <aside className="w-64 bg-[#111111] border-r border-gray-800 flex flex-col fixed h-full z-10">
         <div className="p-6 border-b border-gray-800">
-          <h1 className="text-2xl font-bold text-red-600 tracking-widest">SABAYFLIX</h1>
+          <div className="flex items-center gap-2">
+            <img src="/PHUMCINE.png" alt="PhumCine Logo" className="h-10 md:h-16 w-auto object-contain" />
+            <h1 className="text-2xl font-bold text-red-600 tracking-widest">PHUMCINE</h1>
+          </div>
           <p className="text-xs text-gray-500 mt-1">Admin Panel</p>
         </div>
         

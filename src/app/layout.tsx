@@ -11,8 +11,20 @@ export const viewport: Viewport = {
 };
 
 export const metadata = {
-  title: "SabayFlix",
-  description: "SabayFlix Clone Built with Next.js",
+  title: "PhumCine - មើលរឿងខ្មែរនិងបរទេស",
+  description: "PhumCine គឺជាគេហទំព័រសម្រាប់ទស្សនាភាពយន្តខ្មែរ និងបរទេសដែលមានគុណភាពខ្ពស់។",
+  openGraph: {
+    title: "PhumCine - មើលរឿងខ្មែរនិងបរទេស",
+    description: "PhumCine គឺជាគេហទំព័រសម្រាប់ទស្សនាភាពយន្តខ្មែរ និងបរទេសដែលមានគុណភាពខ្ពស់។",
+    type: "website",
+    siteName: "PhumCine",
+  },
+  icons: {
+    icon: "/PHUMCINE.png",
+    shortcut: "/PHUMCINE.png",
+    apple: "/PHUMCINE.png",
+  },
+  manifest: "/manifest.json"
 };
 
 export default function RootLayout({
