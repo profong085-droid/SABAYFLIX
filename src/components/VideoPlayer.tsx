@@ -4,13 +4,17 @@ import { useRef, useState, useEffect } from "react";
 import { ArrowLeft, Heart, Play, Pause, Volume2, VolumeX, Maximize2, SkipForward } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { StaticImageData } from "next/image";
+import { updateWatchProgress, getWatchProgress } from "@/lib/db";
+import { useAuth } from "@/context/AuthContext";
 
 interface VideoPlayerProps {
+  movieId: string;
   poster: StaticImageData | string;
   isPaid?: boolean;
 }
 
-export default function VideoPlayer({ poster, isPaid }: VideoPlayerProps) {
+export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProps) {
+  const { user } = useAuth();
   const router = useRouter();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -40,6 +44,34 @@ export default function VideoPlayer({ poster, isPaid }: VideoPlayerProps) {
       }
     }
   }, []);
+
+  // Load watch progress on mount
+  useEffect(() => {
+    if (user && videoRef.current) {
+      getWatchProgress(user.uid, movieId).then(time => {
+        if (time > 0 && videoRef.current) {
+          videoRef.current.currentTime = time;
+        }
+      });
+    }
+  }, [user, movieId]);
+  
+  // Throttle saving watch progress (e.g., every 10 seconds)
+  useEffect(() => {
+    if (!user || !isPlaying) return;
+    
+    const interval = setInterval(() => {
+      if (videoRef.current) {
+        const time = videoRef.current.currentTime;
+        if (time > 0) {
+          updateWatchProgress(user.uid, movieId, time);
+        }
+      }
+    }, 10000);
+    
+    return () => clearInterval(interval);
+  }, [user, movieId, isPlaying]);
+
 
   const togglePlay = () => {
     if (videoRef.current) {

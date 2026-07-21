@@ -102,10 +102,12 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     setError("");
+    const provider = new GoogleAuthProvider();
     try {
+      // Call signInWithPopup immediately to prevent popup blockers
+      const popupPromise = signInWithPopup(auth, provider);
       setGoogleLoading(true);
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
+      await popupPromise;
       router.push("/");
     } catch (err: any) {
       console.error(err);

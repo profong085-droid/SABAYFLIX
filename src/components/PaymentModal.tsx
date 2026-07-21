@@ -5,6 +5,9 @@ import { X, CreditCard, ShoppingCart, Info, ScanLine, Camera } from "lucide-reac
 import { addStoredItem } from "@/lib/storage";
 import Image from "next/image";
 import qrImage from "@/qr/qrkh.jpg";
+import { useAuth } from "@/context/AuthContext";
+import { toggleUserMovie } from "@/lib/db";
+import { useRouter } from "next/navigation";
 
 interface PaymentModalProps {
   movieId: string;
@@ -13,6 +16,8 @@ interface PaymentModalProps {
 }
 
 export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModalProps) {
+  const { user } = useAuth();
+  const router = useRouter();
   const [step, setStep] = useState(0); // 0 = closed, 1 = initial sheet, 2 = checkout details, 3 = KHQR
   const [timer, setTimer] = useState(299); // 4:59
 
@@ -32,8 +37,13 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
     return `0${m}:${s < 10 ? '0' : ''}${s}`;
   };
 
-  const handlePaySuccess = () => {
-    addStoredItem("sabayflix_purchased", movieId);
+  const handlePaySuccess = async () => {
+    if (!user) {
+      alert("សូមចូលគណនី (Login) ជាមុនសិន!");
+      router.push("/login");
+      return;
+    }
+    await toggleUserMovie(user.uid, "purchased", movieId, true);
     setIsPaid(true);
     setStep(0);
     // Real app might not alert, but we will leave it or remove it. Let's make it smooth and just play.
@@ -45,7 +55,14 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
       {!isPaid && (
         <div className="w-full mt-4 flex justify-center lg:justify-start">
           <button 
-            onClick={() => setStep(1)}
+            onClick={() => {
+              if (!user) {
+                alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទិញរឿងនេះ!");
+                router.push("/login");
+                return;
+              }
+              setStep(1);
+            }}
             className="w-full lg:w-auto px-8 py-3.5 bg-red-600 hover:bg-red-700 rounded-xl text-white font-bold text-[15px] shadow-lg shadow-red-600/20 transition-transform active:scale-95 flex items-center justify-center gap-2"
           >
             <ShoppingCart className="w-5 h-5" />

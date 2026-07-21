@@ -4,8 +4,12 @@ import { Crown, Check, ChevronLeft, CreditCard, X, QrCode } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import qrImage from "@/qr/qrkh.jpg";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function VIPPage() {
+  const { user } = useAuth();
+  const router = useRouter();
   const [selectedPlan, setSelectedPlan] = useState<number>(1);
   const [showPayment, setShowPayment] = useState(false);
 
@@ -119,7 +123,14 @@ export default function VIPPage() {
         {/* Action Button */}
         <div className="max-w-md mx-auto">
            <button 
-             onClick={() => setShowPayment(true)}
+             onClick={() => {
+               if (!user) {
+                 alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទិញកញ្ចប់ VIP!");
+                 router.push("/login");
+                 return;
+               }
+               setShowPayment(true);
+             }}
              className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-xl shadow-[0_10px_30px_rgba(220,38,38,0.3)] hover:shadow-[0_10px_40px_rgba(220,38,38,0.4)] transition-all active:scale-95 flex items-center justify-center gap-2 text-lg"
            >
              <CreditCard className="w-6 h-6" />

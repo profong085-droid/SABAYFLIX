@@ -93,3 +93,50 @@ export async function toggleUserMovie(userId: string, type: MovieListType, movie
     return false;
   }
 }
+
+// Update the user's watch progress for a specific movie (in seconds)
+export async function updateWatchProgress(userId: string, movieId: string, time: number): Promise<void> {
+  try {
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      await setDoc(docRef, {
+        purchased: [],
+        saved: [],
+        downloaded: [],
+        watching: [],
+        watchProgress: { [movieId]: time }
+      });
+    } else {
+      await updateDoc(docRef, {
+        [`watchProgress.${movieId}`]: time
+      });
+    }
+  } catch (error: any) {
+    if (!error?.message?.includes("client is offline")) {
+      console.error(`Error updating watch progress for movie ${movieId}:`, error);
+    }
+  }
+}
+
+// Get the user's watch progress for a specific movie (in seconds)
+export async function getWatchProgress(userId: string, movieId: string): Promise<number> {
+  try {
+    const docRef = doc(db, "users", userId);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      if (data.watchProgress && data.watchProgress[movieId]) {
+        return data.watchProgress[movieId];
+      }
+    }
+    return 0;
+  } catch (error: any) {
+    if (!error?.message?.includes("client is offline")) {
+      console.error(`Error getting watch progress for movie ${movieId}:`, error);
+    }
+    return 0;
+  }
+}

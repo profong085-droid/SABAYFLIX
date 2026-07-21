@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import MovieCard from "@/components/MovieCard";
 import { allMoviesList } from "@/lib/mockData";
 import type { Movie } from "@/lib/mockData";
-import { getStoredItems } from "@/lib/storage";
+import { getAllUserMovies } from "@/lib/db";
+import { useAuth } from "@/context/AuthContext";
 import { VideoOff, Play } from "lucide-react";
 import Link from "next/link";
 
@@ -15,23 +16,20 @@ export default function MyMoviesPage() {
   const [watchingMovies, setWatchingMovies] = useState<Movie[]>([]);
   const [downloadedMovies, setDownloadedMovies] = useState<Movie[]>([]);
 
+  const { user } = useAuth();
+
   useEffect(() => {
-    // Load purchased movies
-    const paidIds = getStoredItems("sabayflix_purchased");
-    setSavedMovies(allMoviesList.filter(m => paidIds.includes(m.id)));
-
-    // Load saved movies (watchlist)
-    const savedIds = getStoredItems("sabayflix_saved");
-    setWatchList(allMoviesList.filter(m => savedIds.includes(m.id)));
-
-    // Load watching movies
-    const watchingIds = getStoredItems("sabayflix_watching");
-    setWatchingMovies(watchingIds.map(id => allMoviesList.find(m => m.id === id)).filter(Boolean) as Movie[]);
-
-    // Load downloaded movies
-    const downloadedIds = getStoredItems("sabayflix_downloaded");
-    setDownloadedMovies(allMoviesList.filter(m => downloadedIds.includes(m.id)));
-  }, []);
+    async function loadData() {
+      if (!user) return;
+      const lists = await getAllUserMovies(user.uid);
+      
+      setSavedMovies(allMoviesList.filter(m => lists.purchased?.includes(m.id)));
+      setWatchList(allMoviesList.filter(m => lists.saved?.includes(m.id)));
+      setWatchingMovies((lists.watching || []).map((id: string) => allMoviesList.find(m => m.id === id)).filter(Boolean) as Movie[]);
+      setDownloadedMovies(allMoviesList.filter(m => lists.downloaded?.includes(m.id)));
+    }
+    loadData();
+  }, [user]);
   
   // Use different mock data lists for different tabs
   let displayMovies: Movie[] = [];

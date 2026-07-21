@@ -68,7 +68,7 @@ export default function MovieView({ movie }: MovieViewProps) {
 
   return (
     <div className="bg-[#0a0a0a] min-h-screen">
-      <VideoPlayer poster={movie.poster} isPaid={isPaid} />
+      <VideoPlayer movieId={movie.id} poster={movie.poster} isPaid={isPaid} />
 
       <div className="p-4 md:p-8 lg:p-12 max-w-7xl mx-auto w-full">
         <div className="lg:grid lg:grid-cols-3 lg:gap-16">

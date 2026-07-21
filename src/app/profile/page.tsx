@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Settings, ChevronRight, Facebook, Send, Play, Camera, ShoppingCart, Heart, LogOut, Globe, History, User, ShieldCheck, Crown } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { getStoredItems } from "@/lib/storage";
+import { getAllUserMovies } from "@/lib/db";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
@@ -22,12 +22,17 @@ export default function ProfilePage() {
   }, [user, loading, router]);
 
   useEffect(() => {
-    const paidIds = getStoredItems("sabayflix_purchased");
-    setStats(prev => ({ ...prev, bought: paidIds.length }));
-
-    const savedIds = getStoredItems("sabayflix_saved");
-    setStats(prev => ({ ...prev, saved: savedIds.length }));
-  }, []);
+    async function loadStats() {
+      if (user) {
+        const lists = await getAllUserMovies(user.uid);
+        setStats({
+          bought: lists.purchased?.length || 0,
+          saved: lists.saved?.length || 0
+        });
+      }
+    }
+    loadStats();
+  }, [user]);
 
   const handleLogout = async () => {
     try {
