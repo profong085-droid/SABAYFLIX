@@ -1,13 +1,67 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
-import { Heart } from "lucide-react";
+import { Heart, Share2 } from "lucide-react";
 import type { Movie } from "@/lib/mockData";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { getUserMovies, toggleUserMovie } from "@/lib/db";
+import { useRouter } from "next/navigation";
 
 interface MovieCardProps {
   movie: Movie;
+  progress?: number; // 0 to 100
 }
 
-export default function MovieCard({ movie }: MovieCardProps) {
+export default function MovieCard({ movie, progress }: MovieCardProps) {
+  const { user } = useAuth();
+  const router = useRouter();
+  const [isSaved, setIsSaved] = useState(false);
+
+  useEffect(() => {
+    async function checkSaved() {
+      if (user) {
+        const saved = await getUserMovies(user.uid, "saved");
+        setIsSaved(saved.includes(movie.id));
+      }
+    }
+    checkSaved();
+  }, [user, movie.id]);
+
+  const handleSave = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigating to movie
+    if (!user) {
+      alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីរក្សាទុករឿងនេះ!");
+      router.push("/login");
+      return;
+    }
+    
+    // Optimistic UI update
+    setIsSaved(!isSaved);
+    const added = await toggleUserMovie(user.uid, "saved", movie.id);
+    setIsSaved(added);
+  };
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent navigating to movie
+    const url = `${window.location.origin}/movie/${movie.id}`;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: movie.title,
+          text: `សូមទស្សនារឿង ${movie.title} នៅលើ PhumCine!`,
+          url: url
+        });
+      } catch (err) {
+        console.log(err);
+      }
+    } else {
+      navigator.clipboard.writeText(url);
+      alert("បានចម្លងតំណរភ្ជាប់ (Link Copied)!");
+    }
+  };
+
   return (
     <Link href={`/movie/${movie.id}`} className="group relative flex flex-col w-full overflow-hidden rounded-xl bg-surface border border-gray-800 transition-transform active:scale-95">
       <div className="relative w-full aspect-[2/3] overflow-hidden">
@@ -21,19 +75,34 @@ export default function MovieCard({ movie }: MovieCardProps) {
         />
         
         {/* Top Badges */}
-        <div className="absolute top-2 left-2 right-2 flex justify-between items-start">
-          <span className="bg-red-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-full shadow-sm">សមាជិក</span>
+        <div className="absolute top-2 left-2 right-2 flex justify-between items-start z-10 pointer-events-none">
+          <span className="bg-red-600 text-white font-bold text-[10px] px-2 py-0.5 rounded-full shadow-sm pointer-events-auto">សមាជិក</span>
          
-          <button 
-            className="p-1 z-10" 
-            onClick={(e) => { 
-              e.preventDefault(); 
-              alert("មុខងារនេះនឹងអនុញ្ញាតឲ្យអ្នករក្សាទុករឿងទៅក្នុងបញ្ជីចំណូលចិត្តនៅពេលក្រោយ!"); 
-            }}
-          >
-            <Heart className="w-5 h-5 text-white drop-shadow-md hover:fill-white transition-all" />
-          </button>
+          <div className="flex flex-col gap-2 pointer-events-auto">
+            <button 
+              className="p-1.5 bg-black/40 rounded-full backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors" 
+              onClick={handleSave}
+            >
+              <Heart className={`w-4 h-4 transition-all ${isSaved ? 'text-red-500 fill-red-500' : 'text-white hover:text-red-400'}`} />
+            </button>
+            <button 
+              className="p-1.5 bg-black/40 rounded-full backdrop-blur-sm border border-white/10 hover:bg-black/60 transition-colors" 
+              onClick={handleShare}
+            >
+              <Share2 className="w-4 h-4 text-white hover:text-blue-400 transition-colors" />
+            </button>
+          </div>
         </div>
+
+        {/* Progress Bar overlay */}
+        {progress !== undefined && (
+          <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-800/80 z-20">
+            <div 
+              className="h-full bg-red-600 shadow-[0_0_8px_rgba(220,38,38,0.8)]"
+              style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
+            />
+          </div>
+        )}
       </div>
       
       <div className="p-2 space-y-1">

@@ -10,9 +10,10 @@ interface HorizontalMovieListProps {
   title: string;
   movies: Movie[];
   viewAllLink?: string;
+  progressData?: Record<string, number>;
 }
 
-export default function HorizontalMovieList({ title, movies, viewAllLink }: HorizontalMovieListProps) {
+export default function HorizontalMovieList({ title, movies, viewAllLink, progressData }: HorizontalMovieListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   const scroll = (direction: "left" | "right") => {
@@ -47,7 +48,7 @@ export default function HorizontalMovieList({ title, movies, viewAllLink }: Hori
         >
           {movies.map((movie) => (
             <div key={movie.id} className="snap-start w-[110px] sm:w-[120px] md:w-[140px] lg:w-[160px] xl:w-[180px] flex-none">
-              <MovieCard movie={movie} />
+              <MovieCard movie={movie} progress={progressData?.[movie.id]} />
             </div>
           ))}
         </div>

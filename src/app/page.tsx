@@ -1,15 +1,42 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TopNav from "@/components/layout/TopNav";
 import HeroCarousel from "@/components/HeroCarousel";
 import HorizontalMovieList from "@/components/HorizontalMovieList";
-import { featuredMovies, trendingMovies, mostWatchedMovies, allMoviesList } from "@/lib/mockData";
+import { featuredMovies, trendingMovies, mostWatchedMovies, allMoviesList, Movie } from "@/lib/mockData";
 import { Share2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { getAllUserMovies } from "@/lib/db";
 
 export default function Home() {
+  const { user } = useAuth();
   const [activeHeroIndex, setActiveHeroIndex] = useState(0);
   const activeMovie = featuredMovies[activeHeroIndex];
+  
+  const [watchingMovies, setWatchingMovies] = useState<Movie[]>([]);
+  const [watchProgress, setWatchProgress] = useState<Record<string, number>>({});
+
+  useEffect(() => {
+    async function loadUserMovies() {
+      if (user) {
+        const lists = await getAllUserMovies(user.uid);
+        if (lists.watching && lists.watching.length > 0) {
+          const watching = lists.watching
+            .map((id: string) => allMoviesList.find(m => m.id === id))
+            .filter(Boolean) as Movie[];
+          setWatchingMovies(watching.reverse()); // Show most recent first
+        }
+        if (lists.watchProgress) {
+          setWatchProgress(lists.watchProgress);
+        }
+      } else {
+        setWatchingMovies([]);
+        setWatchProgress({});
+      }
+    }
+    loadUserMovies();
+  }, [user]);
 
   const handleShare = async () => {
     if (!activeMovie) return;
@@ -67,6 +94,26 @@ export default function Home() {
       )}
 
       <div className="mt-4 max-w-6xl mx-auto w-full flex flex-col gap-2">
+        {watchingMovies.length > 0 && (
+          <HorizontalMovieList 
+            title="បន្តការទស្សនា" 
+            movies={watchingMovies} 
+            progressData={Object.fromEntries(
+              watchingMovies.map(m => {
+                const secondsWatched = watchProgress[m.id] || 0;
+                // Parse duration "1h 30m" roughly
+                let totalSeconds = 7200; // default 2 hours
+                const match = m.duration.match(/(\d+)h\s*(?:(\d+)m)?/);
+                if (match) {
+                  totalSeconds = parseInt(match[1]) * 3600 + (parseInt(match[2] || "0")) * 60;
+                }
+                const pct = Math.min(100, Math.max(5, (secondsWatched / totalSeconds) * 100));
+                return [m.id, pct];
+              })
+            )}
+          />
+        )}
+
         <HorizontalMovieList 
           title="រឿងថ្មីៗទើបបញ្ចូល" 
           movies={allMoviesList.slice(-10).reverse()} 

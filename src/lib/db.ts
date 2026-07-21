@@ -39,16 +39,16 @@ export async function getAllUserMovies(userId: string) {
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return docSnap.data() as Record<MovieListType, string[]>;
+      return docSnap.data() as Record<MovieListType, string[]> & { watchProgress?: Record<string, number> };
     }
-    return { purchased: [], saved: [], downloaded: [], watching: [] };
+    return { purchased: [], saved: [], downloaded: [], watching: [], watchProgress: {} };
   } catch (error: any) {
     if (error?.message?.includes("client is offline")) {
       console.warn("Firestore: Client is offline. Returning empty lists.");
     } else {
       console.error("Error fetching all user movies:", error);
     }
-    return { purchased: [], saved: [], downloaded: [], watching: [] };
+    return { purchased: [], saved: [], downloaded: [], watching: [], watchProgress: {} };
   }
 }
 
