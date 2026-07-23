@@ -26,6 +26,14 @@ export default function MovieView({ movie }: MovieViewProps) {
   const [isDownloaded, setIsDownloaded] = useState(false);
 
   useEffect(() => {
+    // Check local storage for instant paid state
+    try {
+      const localPurchased = JSON.parse(localStorage.getItem("purchased_movies") || "[]");
+      if (localPurchased.includes(movie.id)) {
+        setIsPaid(true);
+      }
+    } catch (e) {}
+
     async function loadUserData() {
       if (!user) return;
       
@@ -34,7 +42,15 @@ export default function MovieView({ movie }: MovieViewProps) {
 
       // Fetch states
       const paidItems = await getUserMovies(user.uid, "purchased");
-      if (paidItems.includes(movie.id)) setIsPaid(true);
+      if (paidItems.includes(movie.id)) {
+        setIsPaid(true);
+        try {
+          const localPurchased = JSON.parse(localStorage.getItem("purchased_movies") || "[]");
+          if (!localPurchased.includes(movie.id)) {
+            localStorage.setItem("purchased_movies", JSON.stringify([...localPurchased, movie.id]));
+          }
+        } catch (e) {}
+      }
 
       const savedItems = await getUserMovies(user.uid, "saved");
       if (savedItems.includes(movie.id)) setIsSaved(true);

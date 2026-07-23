@@ -73,12 +73,17 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
   };
 
   const handlePaySuccess = async () => {
-    if (!user) {
-      showToast("សូមចូលគណនី (Login) ជាមុនសិន!", "info", "error");
-      router.push("/login");
-      return;
+    // Save to local storage cache for instant offline/reload access
+    try {
+      const localPurchased = JSON.parse(localStorage.getItem("purchased_movies") || "[]");
+      if (!localPurchased.includes(movieId)) {
+        localStorage.setItem("purchased_movies", JSON.stringify([...localPurchased, movieId]));
+      }
+    } catch (e) {}
+
+    if (user) {
+      await toggleUserMovie(user.uid, "purchased", movieId, true);
     }
-    await toggleUserMovie(user.uid, "purchased", movieId, true);
     setIsPaid(true);
     setStep(0);
     setIsSuccess(false);
@@ -119,7 +124,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
             className="w-full lg:w-auto px-8 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-xl text-white font-bold text-[15px] shadow-lg shadow-green-600/30 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2.5 hover:shadow-glow-green"
           >
             <Play className="w-5 h-5 fill-white text-white" />
-            មើលត្រេល័រ
+            ទស្សនាពេញលេញ (Watch Movie)
           </button>
         </div>
       ) : (
