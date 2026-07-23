@@ -11,6 +11,7 @@ import { Share2, Ban, Bookmark, BookmarkCheck, Download, CheckCircle2, User, Pla
 import Image from "next/image";
 import MovieCard from "@/components/MovieCard";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/Toast";
 
 interface MovieViewProps {
   movie: Movie;
@@ -19,6 +20,7 @@ interface MovieViewProps {
 export default function MovieView({ movie }: MovieViewProps) {
   const router = useRouter();
   const { user } = useAuth();
+  const { showToast } = useToast();
   const [isPaid, setIsPaid] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
@@ -46,7 +48,7 @@ export default function MovieView({ movie }: MovieViewProps) {
 
   const toggleSave = async () => {
     if (!user) {
-      alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីរក្សាទុករឿងនេះ!");
+      showToast("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីរក្សាទុករឿងនេះ!", "info", "error");
       router.push("/login");
       return;
     }
@@ -56,7 +58,7 @@ export default function MovieView({ movie }: MovieViewProps) {
 
   const toggleDownload = async () => {
     if (!user) {
-      alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទាញយករឿងនេះ!");
+      showToast("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទាញយករឿងនេះ!", "info", "error");
       router.push("/login");
       return;
     }
@@ -78,7 +80,7 @@ export default function MovieView({ movie }: MovieViewProps) {
       }
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert("បានចម្លងតំណរភ្ជាប់ (Link Copied)!");
+      showToast("បានចម្លងតំណរភ្ជាប់ (Link Copied)!", "success", "copy");
     }
   };
 
@@ -86,7 +88,7 @@ export default function MovieView({ movie }: MovieViewProps) {
 
   return (
     <div className="bg-[#0a0a0a] min-h-screen">
-      <VideoPlayer movieId={movie.id} poster={movie.poster} isPaid={isPaid} />
+      <VideoPlayer movieId={movie.id} poster={movie.poster} isPaid={isPaid} videoUrl={movie.videoUrl} />
 
       <div className="p-4 md:p-8 lg:p-12 max-w-7xl mx-auto w-full">
         <div className="lg:grid lg:grid-cols-3 lg:gap-16">
@@ -172,15 +174,17 @@ export default function MovieView({ movie }: MovieViewProps) {
             </div>
 
             {/* Warning Banner */}
-            <div className="glass-card rounded-xl p-4 flex items-start gap-4 animate-border-glow animate-fadeInUp mt-8" style={{ animationDelay: '0.25s', borderColor: 'rgba(220, 38, 38, 0.15)' }}>
-              <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
-                <Ban className="w-5 h-5 text-red-500/80" />
-              </div>
-              <div>
-                <h3 className="text-red-400/90 font-medium mb-1">បម្រាម</h3>
-                <p className="text-xs text-gray-400 leading-relaxed">
-                  ហាមលួចថតចម្លងវីដេអូ ឬទាញយកទៅចែកចាយបន្តលើបណ្តាញសង្គមដោយគ្មានការអនុញ្ញាត។ យើងនឹងចាត់វិធានការផ្លូវច្បាប់យ៉ាងម៉ឺងម៉ាត់។
-                </p>
+            <div className="animate-fadeInUp mt-8" style={{ animationDelay: '0.25s' }}>
+              <div className="glass-card rounded-xl p-4 flex items-start gap-4 animate-border-glow" style={{ borderColor: 'rgba(220, 38, 38, 0.15)' }}>
+                <div className="w-10 h-10 rounded-full bg-red-500/10 flex items-center justify-center flex-shrink-0">
+                  <Ban className="w-5 h-5 text-red-500/80" />
+                </div>
+                <div>
+                  <h3 className="text-red-400/90 font-medium mb-1">បម្រាម</h3>
+                  <p className="text-xs text-gray-400 leading-relaxed">
+                    ហាមលួចថតចម្លងវីដេអូ ឬទាញយកទៅចែកចាយបន្តលើបណ្តាញសង្គមដោយគ្មានការអនុញ្ញាត។ យើងនឹងចាត់វិធានការផ្លូវច្បាប់យ៉ាងម៉ឺងម៉ាត់។
+                  </p>
+                </div>
               </div>
             </div>
 

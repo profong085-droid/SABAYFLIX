@@ -9,10 +9,12 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { auth } from "@/lib/firebase";
 import { signOut, updateProfile } from "firebase/auth";
+import { useToast } from "@/components/Toast";
 
 export default function ProfilePage() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { showToast } = useToast();
   const [stats, setStats] = useState({ bought: 0, saved: 0 });
   
   const [isEditing, setIsEditing] = useState(false);
@@ -62,7 +64,7 @@ export default function ProfilePage() {
       setIsEditing(false);
     } catch (error) {
       console.error("Error updating name:", error);
-      alert("មានបញ្ហាក្នុងការកែប្រែឈ្មោះ។");
+      showToast("មានបញ្ហាក្នុងការកែប្រែឈ្មោះ។", "error", "error");
     } finally {
       setSaving(false);
     }

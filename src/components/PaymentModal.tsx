@@ -1,13 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, CreditCard, ShoppingCart, Info, ScanLine, Camera } from "lucide-react";
+import { X, CreditCard, ShoppingCart, Info, ScanLine, Camera, Play, CheckCircle2 } from "lucide-react";
 import { addStoredItem } from "@/lib/storage";
 import Image from "next/image";
 import qrImage from "@/qr/qrkh.jpg";
 import { useAuth } from "@/context/AuthContext";
 import { toggleUserMovie } from "@/lib/db";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/components/Toast";
 
 interface PaymentModalProps {
   movieId: string;
@@ -18,6 +19,7 @@ interface PaymentModalProps {
 export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModalProps) {
   const { user } = useAuth();
   const router = useRouter();
+  const { showToast } = useToast();
   const [step, setStep] = useState(0); // 0 = closed, 1 = initial sheet, 2 = checkout details, 3 = KHQR
   const [timer, setTimer] = useState(299); // 4:59
 
@@ -39,7 +41,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
 
   const handlePaySuccess = async () => {
     if (!user) {
-      alert("សូមចូលគណនី (Login) ជាមុនសិន!");
+      showToast("សូមចូលគណនី (Login) ជាមុនសិន!", "info", "error");
       router.push("/login");
       return;
     }
@@ -51,13 +53,34 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
 
   return (
     <>
-      {/* Inline Action Button for Buying */}
-      {!isPaid && (
+      {/* Inline Action Button for Buying or Watching */}
+      {isPaid ? (
+        <div className="w-full mt-4 flex justify-center lg:justify-start">
+          <button 
+            onClick={() => {
+              const videoContainer = document.getElementById("video-player-section");
+              const videoElement = document.querySelector("video");
+              if (videoContainer) {
+                videoContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+              } else {
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }
+              if (videoElement) {
+                videoElement.play().catch(() => {});
+              }
+            }}
+            className="w-full lg:w-auto px-8 py-3.5 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 rounded-xl text-white font-bold text-[15px] shadow-lg shadow-green-600/30 transition-all duration-300 active:scale-95 flex items-center justify-center gap-2.5 hover:shadow-glow-green"
+          >
+            <Play className="w-5 h-5 fill-white text-white" />
+            មើលត្រេល័រ
+          </button>
+        </div>
+      ) : (
         <div className="w-full mt-4 flex justify-center lg:justify-start">
           <button 
             onClick={() => {
               if (!user) {
-                alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទិញរឿងនេះ!");
+                showToast("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទិញរឿងនេះ!", "info", "error");
                 router.push("/login");
                 return;
               }

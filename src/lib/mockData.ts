@@ -31,12 +31,14 @@ export interface Movie {
   language: string;
   genre: string;
   description: string;
+  videoUrl?: string;
   isNew?: boolean;
   episodes?: {
     id: string;
     title: string;
     duration: string;
     image: string | StaticImageData;
+    videoUrl?: string;
   }[];
 }
 

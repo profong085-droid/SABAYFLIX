@@ -1,21 +1,24 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
-import { ArrowLeft, Heart, Play, Pause, Volume2, VolumeX, Maximize2, SkipForward } from "lucide-react";
+import { ArrowLeft, Heart, Play, Pause, Volume2, VolumeX, Maximize2, SkipForward, Headphones, Sparkles } from "lucide-react";
 import { useRouter } from "next/navigation";
 import type { StaticImageData } from "next/image";
 import { updateWatchProgress, getWatchProgress } from "@/lib/db";
 import { useAuth } from "@/context/AuthContext";
+import { useToast } from "@/components/Toast";
 
 interface VideoPlayerProps {
   movieId: string;
   poster: StaticImageData | string;
   isPaid?: boolean;
+  videoUrl?: string;
 }
 
-export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProps) {
+export default function VideoPlayer({ movieId, poster, isPaid, videoUrl }: VideoPlayerProps) {
   const { user } = useAuth();
   const router = useRouter();
+  const { showToast } = useToast();
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -25,6 +28,73 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
   const [duration, setDuration] = useState("0:00");
   const [isMuted, setIsMuted] = useState(false);
   const [showControls, setShowControls] = useState(true);
+
+  // Cinema Sound State
+  const [isCinemaMode, setIsCinemaMode] = useState(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const bassNodeRef = useRef<BiquadFilterNode | null>(null);
+  const compressorNodeRef = useRef<DynamicsCompressorNode | null>(null);
+  const sourceNodeRef = useRef<MediaElementAudioSourceNode | null>(null);
+
+  const initAudio = () => {
+    if (!videoRef.current || audioCtxRef.current) return;
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      const ctx = new AudioContextClass();
+      audioCtxRef.current = ctx;
+
+      const source = ctx.createMediaElementSource(videoRef.current);
+      sourceNodeRef.current = source;
+
+      // Bass EQ for cinematic explosions and rumble
+      const bassNode = ctx.createBiquadFilter();
+      bassNode.type = "lowshelf";
+      bassNode.frequency.value = 120; 
+      bassNode.gain.value = 0; 
+      bassNodeRef.current = bassNode;
+
+      // Compressor for punchiness
+      const compressor = ctx.createDynamicsCompressor();
+      compressor.threshold.value = 0;
+      compressor.ratio.value = 1;
+      compressorNodeRef.current = compressor;
+
+      source.connect(bassNode);
+      bassNode.connect(compressor);
+      compressor.connect(ctx.destination);
+    } catch (err) {
+      console.warn("Web Audio API init failed:", err);
+    }
+  };
+
+  const toggleCinemaMode = () => {
+    if (!audioCtxRef.current) {
+      initAudio();
+    }
+    const newMode = !isCinemaMode;
+    setIsCinemaMode(newMode);
+    
+    if (audioCtxRef.current?.state === 'suspended') {
+      audioCtxRef.current.resume();
+    }
+
+    const now = audioCtxRef.current?.currentTime || 0;
+    if (bassNodeRef.current) {
+      // Boost bass by 15dB when on
+      bassNodeRef.current.gain.setTargetAtTime(newMode ? 15 : 0, now, 0.3);
+    }
+    if (compressorNodeRef.current) {
+      // Compress dynamic range to make it punchier
+      compressorNodeRef.current.threshold.setTargetAtTime(newMode ? -24 : 0, now, 0.3);
+      compressorNodeRef.current.ratio.setTargetAtTime(newMode ? 12 : 1, now, 0.3);
+    }
+
+    if (newMode) {
+      showToast("🔊 បើកមុខងារសំឡេងរោងកុន (Cinema Sound) រួចរាល់", "success", "check");
+    } else {
+      showToast("បិទមុខងារសំឡេងរោងកុន", "info");
+    }
+  };
 
   // Auto-hide controls
   useEffect(() => {
@@ -143,7 +213,7 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
           if (video.webkitEnterFullscreen) {
             video.webkitEnterFullscreen();
           } else {
-            alert("មុខងារពង្រីកអេក្រង់មានបញ្ហា សូមសាកល្បងបើកលើ Browser ផ្សេង។");
+            showToast("មុខងារពង្រីកអេក្រង់មានបញ្ហា សូមសាកល្បងបើកលើ Browser ផ្សេង។", "error", "error");
           }
         });
       } else if (container.webkitRequestFullscreen) {
@@ -178,6 +248,7 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
 
   return (
     <div 
+      id="video-player-section"
       ref={containerRef}
       onMouseMove={() => setShowControls(true)}
       onMouseLeave={() => isPlaying && setShowControls(false)}
@@ -210,7 +281,7 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
       {/* Video Element */}
       <video 
         ref={videoRef}
-        src={isPaid ? "https://media.w3.org/2010/05/sintel/trailer.mp4" : "https://www.w3schools.com/html/mov_bbb.mp4"}
+        src={videoUrl || (isPaid ? "https://media.w3.org/2010/05/sintel/trailer.mp4" : "https://www.w3schools.com/html/mov_bbb.mp4")}
         poster={typeof poster === 'string' ? poster : poster.src}
         className="relative z-10 w-full h-full object-contain shadow-2xl cursor-pointer"
         onClick={togglePlay}
@@ -262,6 +333,14 @@ export default function VideoPlayer({ movieId, poster, isPaid }: VideoPlayerProp
           </div>
 
           <div className="flex items-center gap-4">
+            <button 
+              onClick={toggleCinemaMode} 
+              className={`transition-all flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 rounded-full border ${isCinemaMode ? 'bg-gradient-to-r from-red-600 to-rose-600 text-white border-red-500 shadow-[0_0_15px_rgba(220,38,38,0.5)] scale-105' : 'bg-white/10 text-white/70 border-white/20 hover:text-white hover:bg-white/20'}`}
+              title="3D Cinema Sound"
+            >
+              {isCinemaMode ? <Sparkles className="w-4 h-4 animate-pulse" /> : <Headphones className="w-4 h-4" />}
+              {isCinemaMode ? 'CINEMA ON' : 'CINEMA SOUND'}
+            </button>
             <button onClick={toggleMute} className="text-white hover:text-red-500 transition-colors">
               {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
             </button>

@@ -7,10 +7,12 @@ import qrImage from "@/qr/qrkh.jpg";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { upgradeToVip } from "@/lib/db";
+import { useToast } from "@/components/Toast";
 
 export default function VIPPage() {
   const { user } = useAuth();
   const router = useRouter();
+  const { showToast } = useToast();
   const [selectedPlan, setSelectedPlan] = useState<number>(1);
   const [showPayment, setShowPayment] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -145,7 +147,7 @@ export default function VIPPage() {
            <button 
              onClick={() => {
                if (!user) {
-                 alert("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទិញកញ្ចប់ VIP!");
+                 showToast("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទិញកញ្ចប់ VIP!", "info", "error");
                  router.push("/login");
                  return;
                }

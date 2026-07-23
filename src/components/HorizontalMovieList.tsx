@@ -11,9 +11,10 @@ interface HorizontalMovieListProps {
   movies: Movie[];
   viewAllLink?: string;
   progressData?: Record<string, number>;
+  sectionIcon?: string;
 }
 
-export default function HorizontalMovieList({ title, movies, viewAllLink, progressData }: HorizontalMovieListProps) {
+export default function HorizontalMovieList({ title, movies, viewAllLink, progressData, sectionIcon }: HorizontalMovieListProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -71,28 +72,31 @@ export default function HorizontalMovieList({ title, movies, viewAllLink, progre
         isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
       }`}
     >
-      {/* Section Header */}
+      {/* Section Header — Enhanced with icon and shimmer */}
       <div className="flex items-center justify-between px-4 mb-4">
         <div className="flex items-center gap-2.5">
-          <div className="w-1 h-6 rounded-full gradient-red-bright shadow-glow-red" />
-          <h2 className="text-lg font-bold text-white tracking-wide">{title}</h2>
+          <div className="w-1 h-6 rounded-full gradient-red-bright shadow-glow-red animate-glow-pulse" />
+          {sectionIcon && (
+            <span className="text-base md:text-lg animate-iconBounce" role="img">{sectionIcon}</span>
+          )}
+          <h2 className="text-lg font-bold text-white tracking-wide animate-textGlow">{title}</h2>
         </div>
         {viewAllLink && (
           <Link 
             href={viewAllLink} 
-            className="flex items-center gap-1 text-sm text-textSecondary hover:text-red-400 transition-colors duration-300 group/link"
+            className="flex items-center gap-1 text-sm text-textSecondary hover:text-red-400 transition-all duration-300 group/link hover:gap-2"
           >
             <span className="hidden sm:inline text-xs">មើលទាំងអស់</span>
-            <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1" />
+            <ChevronRight className="w-4 h-4 transition-transform duration-300 group-hover/link:translate-x-1 group-hover/link:text-red-400" />
           </Link>
         )}
       </div>
       
       <div className="relative">
-        {/* Left scroll button */}
+        {/* Left scroll button — with glow effect */}
         <button 
           onClick={() => scroll("left")}
-          className={`hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 glass hover:bg-red-600/80 p-2.5 rounded-full text-white transition-all duration-300 shadow-glass border-white/10 ${
+          className={`hidden md:flex absolute left-2 top-1/2 -translate-y-1/2 z-10 glass hover:bg-red-600/80 p-2.5 rounded-full text-white transition-all duration-300 shadow-glass border-white/10 hover:shadow-glow-red ${
             canScrollLeft ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'
           }`}
         >
@@ -112,10 +116,10 @@ export default function HorizontalMovieList({ title, movies, viewAllLink, progre
           </div>
         </div>
 
-        {/* Right scroll button */}
+        {/* Right scroll button — with glow effect */}
         <button 
           onClick={() => scroll("right")}
-          className={`hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 glass hover:bg-red-600/80 p-2.5 rounded-full text-white transition-all duration-300 shadow-glass border-white/10 ${
+          className={`hidden md:flex absolute right-2 top-1/2 -translate-y-1/2 z-10 glass hover:bg-red-600/80 p-2.5 rounded-full text-white transition-all duration-300 shadow-glass border-white/10 hover:shadow-glow-red ${
             canScrollRight ? 'opacity-100 scale-100' : 'opacity-0 scale-75 pointer-events-none'
           }`}
         >

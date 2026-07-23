@@ -1,6 +1,7 @@
 import "./globals.css";
 import BottomNav from "@/components/layout/BottomNav";
 import { AuthProvider } from "@/context/AuthContext";
+import { ToastProvider } from "@/components/Toast";
 import type { Viewport } from "next";
 import { Inter } from "next/font/google";
 
@@ -88,10 +89,12 @@ export default function RootLayout({
       </head>
       <body className="antialiased bg-black text-textPrimary flex justify-center min-h-screen font-sans" suppressHydrationWarning>
         <AuthProvider>
-          <div className="w-full bg-background min-h-screen relative shadow-2xl pb-16 overflow-x-hidden">
-            {children}
-            <BottomNav />
-          </div>
+          <ToastProvider>
+            <div className="w-full bg-background min-h-screen relative shadow-2xl pb-16 overflow-x-hidden">
+              {children}
+              <BottomNav />
+            </div>
+          </ToastProvider>
         </AuthProvider>
         <script
           dangerouslySetInnerHTML={{
