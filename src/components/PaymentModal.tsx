@@ -73,7 +73,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
   };
 
   const handlePaySuccess = async () => {
-    // Save to local storage cache for instant offline/reload access
+    // 1. Always save to local storage cache for instant offline/reload access
     try {
       const localPurchased = JSON.parse(localStorage.getItem("purchased_movies") || "[]");
       if (!localPurchased.includes(movieId)) {
@@ -81,14 +81,21 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
       }
     } catch (e) {}
 
+    // 2. Try saving to Firestore if user is logged in
     if (user) {
-      await toggleUserMovie(user.uid, "purchased", movieId, true);
+      try {
+        await toggleUserMovie(user.uid, "purchased", movieId, true);
+      } catch (err) {
+        console.warn("Firestore purchase error:", err);
+      }
     }
+
+    // 3. ALWAYS set isPaid true, close step modal, and reset success state!
     setIsPaid(true);
     setStep(0);
     setIsSuccess(false);
 
-    // Scroll to video player & play immediately
+    // 4. Scroll to video player & play immediately
     setTimeout(() => {
       const videoContainer = document.getElementById("video-player-section");
       const videoElement = document.querySelector("video");
@@ -131,6 +138,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
         <div className="w-full mt-4 flex justify-center lg:justify-start">
           <button 
             onClick={() => {
+              if (isPaid) return;
               if (!user) {
                 showToast("សូមចូលគណនី (Login) ជាមុនសិន ដើម្បីទិញរឿងនេះ!", "info", "error");
                 router.push("/login");
@@ -147,7 +155,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
       )}
 
       {/* Step 1 & 2: Bottom Sheet Overlay */}
-      {(step === 1 || step === 2) && (
+      {(step === 1 || step === 2) && !isPaid && (
         <div className="fixed inset-0 z-[60] bg-black/60 flex justify-center items-end animate-in fade-in duration-200" onClick={() => setStep(0)}>
           <div 
             className="w-full max-w-md md:max-w-2xl lg:max-w-4xl xl:max-w-7xl bg-[#111111] md:rounded-t-[3rem] rounded-t-3xl border-t border-gray-800 animate-in slide-in-from-bottom-full duration-300 relative"
@@ -237,7 +245,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
       )}
 
       {/* Step 3: KHQR Fullscreen Modal */}
-      {step === 3 && (
+      {step === 3 && !isPaid && (
         <div className="fixed inset-0 z-[70] bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm animate-in fade-in duration-300">
           <div className="bg-[#090B10] w-full max-w-md rounded-2xl overflow-hidden flex flex-col max-h-[90vh] shadow-2xl border border-gray-900">
         
