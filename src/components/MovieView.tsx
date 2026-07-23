@@ -24,6 +24,18 @@ export default function MovieView({ movie }: MovieViewProps) {
   const [isPaid, setIsPaid] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isDownloaded, setIsDownloaded] = useState(false);
+  const [activeEpisodeId, setActiveEpisodeId] = useState<string | null>(movie.episodes?.[0]?.id || null);
+
+  useEffect(() => {
+    if (movie.episodes && movie.episodes.length > 0) {
+      setActiveEpisodeId(movie.episodes[0].id);
+    } else {
+      setActiveEpisodeId(null);
+    }
+  }, [movie.id]);
+
+  const activeEpObj = movie.episodes?.find(e => e.id === activeEpisodeId);
+  const currentVideoUrl = activeEpObj?.videoUrl || movie.videoUrl;
 
   useEffect(() => {
     // Check local storage for instant paid state
@@ -105,7 +117,12 @@ export default function MovieView({ movie }: MovieViewProps) {
 
   return (
     <div className="bg-[#0a0a0a] min-h-screen">
-      <VideoPlayer movieId={movie.id} poster={movie.poster} isPaid={isPaid} videoUrl={movie.videoUrl} />
+      <VideoPlayer 
+        movieId={movie.id} 
+        poster={activeEpObj?.image || movie.poster} 
+        isPaid={isPaid} 
+        videoUrl={currentVideoUrl} 
+      />
 
       <div className="p-4 md:p-8 lg:p-12 max-w-7xl mx-auto w-full">
         <div className="lg:grid lg:grid-cols-3 lg:gap-16">
@@ -222,23 +239,56 @@ export default function MovieView({ movie }: MovieViewProps) {
                 </div>
                 
                 <div className="space-y-3">
-                  {movie.episodes.map((ep, idx) => (
-                    <div key={ep.id} className="flex gap-4 p-3 rounded-2xl glass-card cursor-pointer group transition-all duration-300 hover:translate-x-1">
-                      <div className="relative w-32 md:w-40 aspect-video rounded-xl overflow-hidden flex-shrink-0 border border-white/5">
-                        <Image src={ep.image} alt={ep.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
-                        <div className="absolute inset-0 bg-black/30 group-hover:bg-black/10 transition-colors duration-300" />
-                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                          <div className="w-10 h-10 glass rounded-full flex items-center justify-center transform scale-75 group-hover:scale-100 transition-transform duration-300">
-                            <Play className="w-4 h-4 text-white fill-white" />
+                  {movie.episodes.map((ep, idx) => {
+                    const isActive = activeEpisodeId === ep.id || (!activeEpisodeId && idx === 0);
+                    return (
+                      <div 
+                        key={ep.id} 
+                        onClick={() => {
+                          setActiveEpisodeId(ep.id);
+                          const playerEl = document.getElementById("video-player-section");
+                          if (playerEl) {
+                            playerEl.scrollIntoView({ behavior: "smooth", block: "center" });
+                          }
+                          setTimeout(() => {
+                            const v = document.querySelector("video");
+                            if (v) v.play().catch(() => {});
+                          }, 100);
+                          showToast(`កំពុងលេង៖ ${ep.title}`, "info");
+                        }}
+                        className={`flex gap-4 p-3 rounded-2xl glass-card cursor-pointer group transition-all duration-300 hover:translate-x-1 border ${
+                          isActive 
+                            ? 'border-red-500/60 bg-red-500/10 shadow-[0_0_20px_rgba(220,38,38,0.25)]' 
+                            : 'border-white/5 hover:border-white/20'
+                        }`}
+                      >
+                        <div className="relative w-32 md:w-40 aspect-video rounded-xl overflow-hidden flex-shrink-0 border border-white/5">
+                          <Image src={ep.image} alt={ep.title} fill className="object-cover group-hover:scale-105 transition-transform duration-700" />
+                          <div className={`absolute inset-0 transition-colors duration-300 ${isActive ? 'bg-black/20' : 'bg-black/30 group-hover:bg-black/10'}`} />
+                          <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center transform transition-transform duration-300 ${
+                              isActive ? 'bg-red-600 text-white shadow-glow-red scale-100' : 'glass text-white scale-75 group-hover:scale-100'
+                            }`}>
+                              <Play className="w-4 h-4 text-white fill-white ml-0.5" />
+                            </div>
                           </div>
                         </div>
+                        <div className="flex-1 py-1 flex flex-col justify-center">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h4 className={`font-medium text-sm md:text-base transition-colors duration-300 ${isActive ? 'text-red-400 font-bold' : 'text-white group-hover:text-red-400'}`}>
+                              {idx + 1}. {ep.title}
+                            </h4>
+                            {isActive && (
+                              <span className="bg-red-500/20 text-red-400 text-[10px] px-2 py-0.5 rounded-full font-bold border border-red-500/30 animate-pulse">
+                                កំពុងលេង
+                              </span>
+                            )}
+                          </div>
+                          <span className="text-xs text-gray-400">{ep.duration}</span>
+                        </div>
                       </div>
-                      <div className="flex-1 py-1">
-                        <h4 className="text-white font-medium text-sm md:text-base group-hover:text-red-400 transition-colors duration-300 mb-1">{idx + 1}. {ep.title}</h4>
-                        <span className="text-xs text-gray-500">{ep.duration}</span>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             )}
