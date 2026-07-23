@@ -234,7 +234,7 @@ export const mostWatchedMovies: Movie[] = [
   },
   {
     id: "w5",
-    title: "Crofilm",
+    title: "រឿងនេសាត្តក្រពើ",
     duration: "1h 55m",
     quality: "FHD",
     poster: crofilm,
@@ -359,7 +359,7 @@ export const allMoviesList: Movie[] = [
   },
   {
     id: "a9",
-    title: "Crofilm",
+    title: "រឿងនេសាត្តក្រពើ",
     duration: "1h 55m",
     quality: "FHD",
     poster: crofilm,
