@@ -67,10 +67,11 @@ export default function MovieView({ movie }: MovieViewProps) {
   };
 
   const handleShare = async () => {
+    const movieUrl = `${window.location.origin}/movie/${movie.id}`;
     const shareData = {
       title: movie.title,
       text: `សូមទស្សនារឿង ${movie.title} នៅលើ PhumCine!`,
-      url: window.location.href
+      url: movieUrl
     };
     if (navigator.share) {
       try {
@@ -79,7 +80,7 @@ export default function MovieView({ movie }: MovieViewProps) {
         console.log(err);
       }
     } else {
-      navigator.clipboard.writeText(window.location.href);
+      navigator.clipboard.writeText(movieUrl);
       showToast("បានចម្លងតំណរភ្ជាប់ (Link Copied)!", "success", "copy");
     }
   };

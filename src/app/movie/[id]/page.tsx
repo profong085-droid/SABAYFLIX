@@ -12,23 +12,37 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
     return { title: "មិនមានរឿងនេះទេ - PhumCine" };
   }
 
-  const imageUrl = typeof movie.poster === 'string' ? movie.poster : movie.poster.src;
+  const relativeImageUrl = typeof movie.poster === 'string' ? movie.poster : movie.poster.src;
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://sabayflix-4.vercel.app";
+  const fullImageUrl = relativeImageUrl.startsWith("http")
+    ? relativeImageUrl
+    : `${baseUrl}${relativeImageUrl.startsWith("/") ? "" : "/"}${relativeImageUrl}`;
+  const pageUrl = `${baseUrl}/movie/${movie.id}`;
 
   return {
     title: `${movie.title} | PhumCine`,
     description: movie.description || `ទស្សនារឿង ${movie.title} កម្រិត ${movie.quality} នៅលើ PhumCine`,
+    metadataBase: new URL(baseUrl),
     openGraph: {
-      title: `${movie.title} | PhumCine`,
+      title: movie.title,
       description: movie.description || `ទស្សនារឿង ${movie.title} កម្រិត ${movie.quality} នៅលើ PhumCine`,
+      url: pageUrl,
+      siteName: "PhumCine",
       images: [
         {
-          url: imageUrl,
-          width: 800,
-          height: 600,
+          url: fullImageUrl,
+          width: 1200,
+          height: 630,
           alt: movie.title,
         },
       ],
       type: "video.movie",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: movie.title,
+      description: movie.description || `ទស្សនារឿង ${movie.title} កម្រិត ${movie.quality} នៅលើ PhumCine`,
+      images: [fullImageUrl],
     },
   };
 }
