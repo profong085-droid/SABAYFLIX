@@ -61,8 +61,7 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
       showToast("ទូទាត់ប្រាក់ជោគជ័យ! អ្នកអាចទស្សនាវីដេអូបានហើយ", "success", "check");
       autoCloseTimer = setTimeout(() => {
         handlePaySuccess();
-        setIsSuccess(false);
-      }, 2500);
+      }, 1200);
     }
     return () => clearTimeout(autoCloseTimer);
   }, [isSuccess]);
@@ -82,6 +81,21 @@ export default function PaymentModal({ movieId, isPaid, setIsPaid }: PaymentModa
     await toggleUserMovie(user.uid, "purchased", movieId, true);
     setIsPaid(true);
     setStep(0);
+    setIsSuccess(false);
+
+    // Scroll to video player & play immediately
+    setTimeout(() => {
+      const videoContainer = document.getElementById("video-player-section");
+      const videoElement = document.querySelector("video");
+      if (videoContainer) {
+        videoContainer.scrollIntoView({ behavior: "smooth", block: "center" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+      if (videoElement) {
+        videoElement.play().catch(() => {});
+      }
+    }, 100);
   };
 
   return (
