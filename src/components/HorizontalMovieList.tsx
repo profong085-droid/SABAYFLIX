@@ -11,7 +11,7 @@ interface HorizontalMovieListProps {
   movies: Movie[];
   viewAllLink?: string;
   progressData?: Record<string, number>;
-  sectionIcon?: string;
+  sectionIcon?: React.ReactNode;
 }
 
 export default function HorizontalMovieList({ title, movies, viewAllLink, progressData, sectionIcon }: HorizontalMovieListProps) {
@@ -77,7 +77,9 @@ export default function HorizontalMovieList({ title, movies, viewAllLink, progre
         <div className="flex items-center gap-2.5">
           <div className="w-1 h-6 rounded-full gradient-red-bright shadow-glow-red animate-glow-pulse" />
           {sectionIcon && (
-            <span className="text-base md:text-lg animate-iconBounce" role="img">{sectionIcon}</span>
+            <div className="flex items-center justify-center animate-iconBounce">
+              {sectionIcon}
+            </div>
           )}
           <h2 className="text-lg font-bold text-white tracking-wide animate-textGlow">{title}</h2>
         </div>

@@ -5,7 +5,7 @@ import TopNav from "@/components/layout/TopNav";
 import HeroCarousel from "@/components/HeroCarousel";
 import HorizontalMovieList from "@/components/HorizontalMovieList";
 import { featuredMovies, trendingMovies, mostWatchedMovies, allMoviesList, Movie } from "@/lib/mockData";
-import { Share2, Sparkles } from "lucide-react";
+import { Share2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { getAllUserMovies } from "@/lib/db";
 import { useToast } from "@/components/Toast";
@@ -122,7 +122,7 @@ export default function Home() {
       
       {/* Movie Details Snippet for the active featured movie */}
       {activeMovie && (
-        <div className="px-4 py-5 mt-3 mx-4 md:mx-auto max-w-6xl glass-vibrant rounded-2xl animate-fadeInUp animate-breathe relative z-10" style={{ animationDelay: '0.15s' }}>
+        <div className="px-4 py-5 mt-3 mx-4 md:mx-auto max-w-6xl glass-vibrant rounded-2xl animate-fadeInUp relative z-10" style={{ animationDelay: '0.15s' }}>
           <div className="flex justify-between items-start mb-4">
             <h2 className="text-[17px] md:text-xl lg:text-2xl font-bold text-white leading-snug animate-textGlow">{activeMovie.title}</h2>
             <button 
@@ -175,7 +175,6 @@ export default function Home() {
           title="រឿងថ្មីៗទើបបញ្ចូល" 
           movies={allMoviesList.slice(-10).reverse()} 
           viewAllLink="/movies?filter=new" 
-          sectionIcon="🆕"
         />
         
         <div className="section-divider mx-8 my-1" />
@@ -184,7 +183,6 @@ export default function Home() {
           title="រឿងកំពុងពេញនិយមថ្មីៗ" 
           movies={trendingMovies} 
           viewAllLink="/movies?filter=trending" 
-          sectionIcon="🔥"
         />
         
         <div className="section-divider mx-8 my-1" />
@@ -193,7 +191,6 @@ export default function Home() {
           title="អ្នកទស្សនាច្រើន" 
           movies={mostWatchedMovies} 
           viewAllLink="/movies?filter=most_watched" 
-          sectionIcon="👑"
         />
 
         <div className="section-divider mx-8 my-1" />
@@ -202,7 +199,6 @@ export default function Home() {
           title="រឿងសកម្មភាព" 
           movies={allMoviesList.filter(m => m.genre === "សកម្មភាព" || m.genre === "បាញ់ប្រហារ")} 
           viewAllLink="/movies?filter=action" 
-          sectionIcon="⚡"
         />
 
         <div className="section-divider mx-8 my-1" />
@@ -211,7 +207,6 @@ export default function Home() {
           title="រឿងមនោសញ្ចេតនា" 
           movies={allMoviesList.filter(m => m.genre === "មនោសញ្ចេតនា" || m.type === "រឿងភាគ")} 
           viewAllLink="/movies?filter=romance" 
-          sectionIcon="💕"
         />
 
         <div className="section-divider mx-8 my-1" />
@@ -220,7 +215,6 @@ export default function Home() {
           title="រឿងទិព្វ និងរន្ធត់" 
           movies={allMoviesList.filter(m => m.genre === "ទិព្វ" || m.genre === "ភ័យរន្ធត់")} 
           viewAllLink="/movies?filter=horror" 
-          sectionIcon="👻"
         />
       </div>
     </main>

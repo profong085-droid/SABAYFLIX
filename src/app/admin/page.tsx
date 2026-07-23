@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, Film, CreditCard, Activity, Loader2 } from "lucide-react";
+import { Users, Film, CreditCard, Activity, Loader2, ShieldCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getAdminStats } from "@/lib/db";
 import { allMoviesList } from "@/lib/mockData";
@@ -35,7 +35,9 @@ export default function AdminDashboardPage() {
     <div>
       <div className="flex justify-between items-center mb-8">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">សួស្តី, Admin! 👋</h1>
+          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-2">
+            សួស្តី, Admin! <ShieldCheck className="w-7 h-7 text-red-500 inline-block" />
+          </h1>
           <p className="text-gray-400">នេះជារបាយការណ៍សង្ខេបសម្រាប់ថ្ងៃនេះ។</p>
         </div>
       </div>

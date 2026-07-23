@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Search as SearchIcon, ArrowLeft, Play } from "lucide-react";
+import { Search as SearchIcon, ArrowLeft, Play, Frown } from "lucide-react";
 import { useRouter } from "next/navigation";
 import MovieCard from "@/components/MovieCard";
 import { allMoviesList } from "@/lib/mockData";
@@ -68,8 +68,9 @@ export default function SearchPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 text-gray-500">
-              <p>មិនមានលទ្ធផលទេ 😢</p>
+            <div className="flex flex-col items-center justify-center py-20 text-gray-500 gap-2">
+              <Frown className="w-10 h-10 text-gray-400 opacity-60" />
+              <p className="text-sm font-medium">មិនមានលទ្ធផលទេ</p>
             </div>
           )}
         </div>
